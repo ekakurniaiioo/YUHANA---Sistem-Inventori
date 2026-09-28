@@ -1,6 +1,6 @@
 export function Navbar() {
   return (
-    <nav className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center bg-background/20 backdrop-blur-md border-b border-white/10 px-8 lg:px-16 py-4">
+    <nav className="fixed top-0 left-0 right-0 z-20 flex justify-between items-center bg-background/20 backdrop-blur-md border-b border-white/10 px-8 lg:px-16 py-4">
       <div>
         <a
           href="#"

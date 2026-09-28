@@ -2,20 +2,20 @@ import { MoveRight } from "lucide-react";
 
 export function Hero() {
   return (
-    <div className="relative w-full h-full">
+    <section id="home" className="relative w-full h-full">
       <img
         src="./Hero.png"
-        alt="Hero Background"
+        alt="Latar belakang peralatan produksi YUHANA"
         className="absolute inset-0 w-full h-full object-cover object-center -z-10"
       />
-      <div className="absolute inset-0 bg-black/40 -z-10" />
+      <div className="absolute inset-0 bg-black/40 -z-10" aria-hidden="true" />
 
       <div className="relative z-10 flex flex-col items-start justify-center h-full max-w-7xl mx-auto px-16 text-left">
         <h1 className="text-8xl font-poppins font-extrabold text-white tracking-wider">
           YUHA<span className="text-gold">NA</span>
         </h1>
 
-        <div className="w-36 h-1.5 bg-gold mt-3 mb-8 rounded-full" />
+        <div className="w-36 h-1.5 bg-gold mt-3 mb-8 rounded-full" aria-hidden="true" />
 
         <p className="text-sm font-inter font-semibold tracking-[0.38em] text-gray-400 uppercase mb-8">
           PRODUCTION EQUIPMENT MANAGEMENT
@@ -31,6 +31,6 @@ export function Hero() {
           <MoveRight size={22} />
         </button>
       </div>
-    </div>
+    </section>
   );
 }
