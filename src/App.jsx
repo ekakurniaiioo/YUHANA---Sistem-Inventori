@@ -1,5 +1,11 @@
+import { LandingPage } from "./assets/components/LandingPage";
+
 function App() {
-  return <></>;
+  return (
+    <>
+      <LandingPage />
+    </>
+  );
 }
 
 export default App;
