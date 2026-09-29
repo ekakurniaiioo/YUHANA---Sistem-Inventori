@@ -1,4 +1,5 @@
 import { MoveRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function Hero() {
   return (
@@ -26,10 +27,10 @@ export function Hero() {
           terpantau.
         </p>
 
-        <button className="inline-flex items-center gap-3.5 bg-gold hover:bg-gold-hover text-black font-poppins font-semibold text-base px-9 py-4 rounded-xl transition-all duration-200 shadow-lg cursor-pointer active:scale-95">
+        <Link to="/login" className="inline-flex items-center gap-3.5 bg-gold hover:bg-gold-hover text-black font-poppins font-semibold text-base px-9 py-4 rounded-xl transition-all duration-200 shadow-lg cursor-pointer active:scale-95">
           <span>Login ke YUHANA</span>
           <MoveRight size={22} />
-        </button>
+        </Link>
       </div>
     </section>
   );

@@ -1,8 +1,8 @@
-import { Navbar } from "./Navbar";
-import { Hero } from "./Hero";
-import { Equipment } from "./Equipment";
-import { About } from "./About";
-import { Footer } from "./Footer";
+import { Navbar } from "../components/Navbar";
+import { Hero } from "../components/Hero";
+import { Equipment } from "../components/Equipment";
+import { About } from "../components/About";
+import { Footer } from "../components/Footer";
 
 export function LandingPage() {
   return (

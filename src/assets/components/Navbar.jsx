@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-20 flex justify-between items-center bg-background/20 backdrop-blur-md border-b border-white/10 px-8 lg:px-16 py-4">
@@ -44,9 +46,12 @@ export function Navbar() {
       </ul>
 
       <div>
-        <button className="text-white text-sm font-poppins font-semibold py-1.5 px-6 rounded-sm cursor-pointer border border-gold hover:bg-gold hover:text-background transition-all duration-200 active:scale-95">
+        <Link
+          to="/login"
+          className="text-white text-sm font-poppins font-semibold py-1.5 px-6 rounded-sm cursor-pointer border border-gold hover:bg-gold hover:text-background transition-all duration-200 active:scale-95"
+        >
           Login
-        </button>
+        </Link>
       </div>
     </nav>
   );

@@ -1,9 +1,14 @@
-import { LandingPage } from "./assets/components/LandingPage";
+import { Routes, Route } from "react-router-dom";
+import { LandingPage } from "./assets/pages/LandingPage";
+import { Login } from "./assets/pages/Login";
 
 function App() {
   return (
     <>
-      <LandingPage />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
     </>
   );
 }
