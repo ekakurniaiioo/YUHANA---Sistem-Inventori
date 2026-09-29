@@ -2,6 +2,7 @@ import { Navbar } from "./Navbar";
 import { Hero } from "./Hero";
 import { Equipment } from "./Equipment";
 import { About } from "./About";
+import { Footer } from "./Footer";
 
 export function LandingPage() {
   return (
@@ -10,11 +11,13 @@ export function LandingPage() {
         <Navbar />
         <Hero />
       </header>
-      
+
       <main>
         <Equipment />
-        <About/>
+        <About />
       </main>
+
+      <Footer />
     </div>
   );
 }
