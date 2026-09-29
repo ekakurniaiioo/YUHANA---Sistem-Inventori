@@ -2,7 +2,7 @@ export function Equipment() {
   return (
     <section id="product" className="min-h-screen bg-background py-24 px-16">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col items-center text-center gap-3 mb-16">
+        <div className="flex flex-col items-start gap-3 mb-16">
           <span className="text-xs font-inter font-semibold tracking-[0.3em] text-gold uppercase py-3">
             Inventory Showcase
           </span>
@@ -11,7 +11,7 @@ export function Equipment() {
             OUR <span className="text-gold">EQUIPMENT</span>
           </h2>
 
-          <div className="w-16 h-1 bg-gold rounded-full my-1" />
+          <div className="w-96 h-1 bg-gold rounded-full my-1" />
 
           <p className="text-base font-inter text-text/80 max-w-md">
             A glimpse of the production equipment managed and organized through
