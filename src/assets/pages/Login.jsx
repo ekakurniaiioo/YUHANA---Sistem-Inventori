@@ -1,7 +1,30 @@
+import { useState } from "react";
 import { Lock, Mail, ArrowRight, ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import users from "../../data/users";
 
 export function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const user = users.find(
+      (user) => user.email === email && user.password === password,
+    );
+    if (user) {
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else if (user.role === "petugas") {
+        navigate("/petugas");
+      } else if (user.role === "peminjam") {
+        navigate("/peminjam");
+      }
+    } else {
+      alert("Invalid email or password");
+    }
+  };
+
   return (
     <main className="w-screen h-screen flex items-center justify-center p-8 relative overflow-hidden">
       <img
@@ -53,10 +76,7 @@ export function Login() {
             </p>
           </div>
 
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="flex flex-col gap-5 w-full"
-          >
+          <form onSubmit={handleLogin} className="flex flex-col gap-5 w-full">
             <div className="flex flex-col gap-1.5 w-full">
               <label className="text-[11px] font-poppins font-bold text-neutral-700 tracking-wider">
                 EMAIL
@@ -68,6 +88,8 @@ export function Login() {
                 />
                 <input
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="nama@company.com"
                   required
                   className="w-full bg-white/85 backdrop-blur-sm border border-neutral-300/80 rounded-xl py-3 pl-11 pr-4 text-sm font-inter text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:border-amber-600 focus:bg-white transition-all duration-200 shadow-sm"
@@ -88,6 +110,8 @@ export function Login() {
                 />
                 <input
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
                   className="w-full bg-white/85 backdrop-blur-sm border border-neutral-300/80 rounded-xl py-3 pl-11 pr-4 text-sm font-inter text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:border-amber-600 focus:bg-white transition-all duration-200 shadow-sm"
