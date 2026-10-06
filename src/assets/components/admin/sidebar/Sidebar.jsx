@@ -1,7 +1,7 @@
 import { LayoutDashboard, Camera, Users, ClipboardList } from "lucide-react";
 import { SidebarItem } from "./SidebarItem";
 
-export function Sidebar() {
+export function Sidebar({ children }) {
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
     { name: "Equipment", icon: Camera, path: "/admin/equipment" },
@@ -40,6 +40,8 @@ export function Sidebar() {
           </label>
           <div className="px-4 font-poppins font-bold">Admin Panel</div>
         </nav>
+
+        {children}
       </div>
 
       <div className="drawer-side is-drawer-close:overflow-visible">
