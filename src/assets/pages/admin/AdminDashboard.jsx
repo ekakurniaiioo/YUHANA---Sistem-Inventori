@@ -61,9 +61,15 @@ export function AdminDashboard() {
               </thead>
               <tbody>
                 <tr className="text-left border-b border-border">
-                  <td className="py-4 px-4 text-xs font-medium text-text">Juun</td>
-                  <td className="py-4 px-4 text-xs font-medium text-text">LED Panel</td>
-                  <td className="py-4 px-4 text-xs font-medium text-text">5 Oct 2026</td>
+                  <td className="py-4 px-4 text-xs font-medium text-text">
+                    Juun
+                  </td>
+                  <td className="py-4 px-4 text-xs font-medium text-text">
+                    LED Panel
+                  </td>
+                  <td className="py-4 px-4 text-xs font-medium text-text">
+                    5 Oct 2026
+                  </td>
                   <td className="py-4 px-4 text-xs font-medium text-text">
                     <span className="bg-success/20 text-success px-2 py-1 rounded-sm text-xs font-medium">
                       Active
@@ -94,7 +100,9 @@ export function AdminDashboard() {
               </thead>
               <tbody>
                 <tr className="text-left border-b border-border">
-                  <td className="py-4 px-4 text-xs font-medium text-text">Tripod</td>
+                  <td className="py-4 px-4 text-xs font-medium text-text">
+                    Tripod
+                  </td>
                   <td className="py-4 px-4 text-xs font-medium text-text">
                     <span className="bg-danger/20 text-danger px-2 py-1 rounded-sm text-xs font-medium">
                       Damaged
@@ -130,9 +138,15 @@ export function AdminDashboard() {
             </thead>
             <tbody>
               <tr className="text-left border-b border-border">
-                <td className="py-4 px-4 text-xs font-medium text-text">Tripod</td>
-                <td className="py-4 px-4 text-xs font-medium text-text">Stella</td>
-                <td className="py-4 px-4 text-xs font-medium text-text">5 Oct 2026</td>
+                <td className="py-4 px-4 text-xs font-medium text-text">
+                  Tripod
+                </td>
+                <td className="py-4 px-4 text-xs font-medium text-text">
+                  Stella
+                </td>
+                <td className="py-4 px-4 text-xs font-medium text-text">
+                  5 Oct 2026
+                </td>
                 <td className="py-4 px-4 text-xs font-medium text-text">
                   <span className="bg-danger/20 text-danger px-2 py-1 rounded-sm text-xs font-medium">
                     Damaged
