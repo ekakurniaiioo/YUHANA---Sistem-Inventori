@@ -1,4 +1,4 @@
-import { Sidebar } from "../../components/admin/sidebar/Sidebar";
+import { Sidebar } from "../../components/sidebar/Sidebar";
 
 export function AdminDashboard() {
   const summaryItems = [

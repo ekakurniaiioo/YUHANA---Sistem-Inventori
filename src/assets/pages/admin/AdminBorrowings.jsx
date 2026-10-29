@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sidebar } from "../../components/admin/sidebar/Sidebar";
+import { Sidebar } from "../../components/sidebar/Sidebar";
 import { Eye } from "lucide-react";
 
 export function AdminBorrowings() {

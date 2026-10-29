@@ -1,4 +1,4 @@
-import { Sidebar } from "../../components/admin/sidebar/Sidebar";
+import { Sidebar } from "../../components/sidebar/Sidebar";
 import { PenLine, Trash } from "lucide-react";
 import users from "../../../data/users";
 

@@ -1,4 +1,4 @@
-import { Sidebar } from "../../components/admin/sidebar/Sidebar";
+import { Sidebar } from "../../components/sidebar/Sidebar";
 import { Link } from "react-router-dom";
 import { Trash, PenLine } from "lucide-react";
 

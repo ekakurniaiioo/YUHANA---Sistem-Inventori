@@ -1,12 +1,20 @@
 import { LayoutDashboard, Camera, Users, ClipboardList } from "lucide-react";
 import { SidebarItem } from "./SidebarItem";
 
-export function Sidebar({ children }) {
+export function Sidebar({ children, role = "admin" }) {
   const menuItems = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
-    { name: "Equipment", icon: Camera, path: "/admin/equipment" },
-    { name: "Users", icon: Users, path: "/admin/users" },
-    { name: "Borrowings", icon: ClipboardList, path: "/admin/borrowings" },
+    { name: "Dashboard", icon: LayoutDashboard, path: `/${role}` },
+    { name: "Equipment", icon: Camera, path: `/${role}/equipment` },
+
+    ...(role === "admin"
+      ? [{ name: "Users", icon: Users, path: "/admin/users" }]
+      : []),
+
+    {
+      name: "Borrowings",
+      icon: ClipboardList,
+      path: `/${role}/borrowings`,
+    },
   ];
 
   return (
@@ -38,7 +46,9 @@ export function Sidebar({ children }) {
               <path d="M14 10l2 2l-2 2"></path>
             </svg>
           </label>
-          <div className="px-4 font-poppins font-bold">Admin Panel</div>
+          <div className="px-4 font-poppins font-bold">
+            {role === "admin" ? "Admin Panel" : "Petugas Panel"}
+          </div>
         </nav>
 
         {children}
@@ -61,7 +71,7 @@ export function Sidebar({ children }) {
               YUHA<span className="text-amber-500">NA</span>
             </span>
           </div>
-          
+
           <ul className="menu w-full gap-1">
             {menuItems.map((item) => {
               return (
@@ -74,7 +84,6 @@ export function Sidebar({ children }) {
               );
             })}
           </ul>
-
         </div>
       </div>
     </div>
