@@ -44,7 +44,7 @@ export function NavbarPeminjam() {
           className="shrink-0"
         >
           <img
-            src="./YUHANA-Logo.png"
+            src="/YUHANA-Logo.png"
             alt="YUHANA"
             width={38}
             height={38}
@@ -57,6 +57,7 @@ export function NavbarPeminjam() {
             <li key={to}>
               <NavLink
                 to={to}
+                end
                 className={({ isActive }) =>
                   `group relative flex min-w-16 items-center gap-1.5 py-2 text-sm font-poppins font-semibold transition-colors duration-200 ${
                     isActive

@@ -6,23 +6,22 @@ import {
   CircleCheck,
   Package,
 } from "lucide-react";
-
 import { NavbarPeminjam } from "../../components/navbar/NavbarPeminjam";
 import HeroPeminjaman from "../../components/hero/HeroPeminjaman";
 
-const categories = [
-  { name: "Semua Kategori", count: 8 },
-  { name: "Camera", count: 1 },
-  { name: "Lens", count: 1 },
-  { name: "Stabilizer", count: 1 },
-  { name: "Lighting", count: 1 },
-  { name: "Audio", count: 1 },
-  { name: "Support", count: 1 },
-  { name: "Storage", count: 1 },
-  { name: "Drone", count: 1 },
-];
-
 export function PeminjamEquipment() {
+  const categories = [
+    { name: "Semua Kategori", count: 8 },
+    { name: "Camera", count: 1 },
+    { name: "Lens", count: 1 },
+    { name: "Stabilizer", count: 1 },
+    { name: "Lighting", count: 1 },
+    { name: "Audio", count: 1 },
+    { name: "Support", count: 1 },
+    { name: "Storage", count: 1 },
+    { name: "Drone", count: 1 },
+  ];
+
   return (
     <main className="min-h-screen bg-[#F5F4F0]">
       <NavbarPeminjam />

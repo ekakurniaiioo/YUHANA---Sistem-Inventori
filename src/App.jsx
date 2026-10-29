@@ -11,6 +11,7 @@ import { PetugasEquipment } from "./assets/pages/petugas/PetugasEquipment";
 import { PetugasEquipmentDetail } from "./assets/pages/petugas/PetugasEquipmentDetail";
 import { PetugasBorrowings } from "./assets/pages/petugas/PetugasBorrowings";
 import { PeminjamEquipment } from "./assets/pages/peminjam/PeminjamEquipment";
+import { PeminjamCart } from "./assets/pages/peminjam/PeminjamCart";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         />
         <Route path="/petugas/borrowings" element={<PetugasBorrowings />} />
         <Route path="/peminjam" element={<PeminjamEquipment />} />
+        <Route path="/peminjam/cart" element={<PeminjamCart />} />
       </Routes>
     </>
   );
