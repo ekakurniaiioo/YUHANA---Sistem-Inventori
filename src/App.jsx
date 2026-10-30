@@ -11,9 +11,11 @@ import { PetugasEquipment } from "./assets/pages/petugas/PetugasEquipment";
 import { PetugasEquipmentDetail } from "./assets/pages/petugas/PetugasEquipmentDetail";
 import { PetugasBorrowings } from "./assets/pages/petugas/PetugasBorrowings";
 import { PeminjamEquipment } from "./assets/pages/peminjam/PeminjamEquipment";
-import { PeminjamCart } from "./assets/pages/peminjam/PeminjamCart";
 import { PeminjamEquipmentDetail } from "./assets/pages/peminjam/PeminjamEquipmentDetail";
+import { PeminjamCart } from "./assets/pages/peminjam/PeminjamCart";
 import { PeminjamBorrowings } from "./assets/pages/peminjam/PeminjamBorrowings";
+import { PeminjamBorrowingsDetail } from "./assets/pages/peminjam/PeminjamBorrowingsDetail";
+import { PeminjamProfile } from "./assets/pages/peminjam/PeminjamProfile";
 
 function App() {
   return (
@@ -40,6 +42,11 @@ function App() {
         <Route path="/peminjam/detail" element={<PeminjamEquipmentDetail />} />
         <Route path="/peminjam/cart" element={<PeminjamCart />} />
         <Route path="/peminjam/borrowings" element={<PeminjamBorrowings />} />
+        <Route
+          path="/peminjam/borrowings/:id"
+          element={<PeminjamBorrowingsDetail />}
+        />
+        <Route path="/peminjam/profile" element={<PeminjamProfile />} />
       </Routes>
     </>
   );

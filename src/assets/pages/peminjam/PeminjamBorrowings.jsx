@@ -9,6 +9,7 @@ import {
   CalendarDays,
 } from "lucide-react";
 import { NavbarPeminjam } from "../../components/navbar/NavbarPeminjam";
+import { Link } from "react-router-dom";
 
 export function PeminjamBorrowings() {
   const summaryItems = [
@@ -42,7 +43,7 @@ export function PeminjamBorrowings() {
     },
   ];
 
-  const filters = ["Semua", "Pending", "Approved", "Borrowed", "Overdue"];
+  const filters = ["Semua", "Pending", "Approved", "Borrowed", "Overdue", "Completed"];
 
   return (
     <main className="min-h-screen bg-[#F5F4F0]">
@@ -206,13 +207,14 @@ export function PeminjamBorrowings() {
                 </p>
               </div>
 
-              <button
+              <Link
+                to="/peminjam/borrowings/detail"
                 type="button"
                 className="inline-flex items-center justify-center gap-2 rounded-md border border-[#A88B50] px-4 py-2.5 font-inter text-sm font-semibold text-[#927644] transition-colors hover:bg-[#A88B50] hover:text-white"
               >
                 Lihat Detail
                 <ArrowRight size={16} />
-              </button>
+              </Link>
             </div>
           </article>
         </section>

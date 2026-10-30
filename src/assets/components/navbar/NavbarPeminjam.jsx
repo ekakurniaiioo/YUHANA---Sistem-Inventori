@@ -3,7 +3,7 @@ import {
   LayoutGrid,
   ShoppingCart,
   ClipboardList,
-  History,
+  User,
   UserRound,
   ChevronDown,
 } from "lucide-react";
@@ -25,9 +25,9 @@ const navItems = [
     icon: ClipboardList,
   },
   {
-    label: "Riwayat",
-    to: "/peminjam/history",
-    icon: History,
+    label: "Profil Saya",
+    to: "/peminjam/profile",
+    icon: User,
   },
 ];
 
