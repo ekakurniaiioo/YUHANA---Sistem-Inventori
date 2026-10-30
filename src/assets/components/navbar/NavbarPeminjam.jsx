@@ -77,7 +77,7 @@ export function NavbarPeminjam() {
                     <span className="whitespace-nowrap">{label}</span>
 
                     {isActive && (
-                      <span className="absolute -bottom-1 h-0.5 w-23 rounded-full bg-gold" />
+                      <span className="absolute -bottom-1 h-0.5 w-full rounded-full bg-gold" />
                     )}
                   </>
                 )}
