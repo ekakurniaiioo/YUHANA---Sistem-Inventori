@@ -44,3 +44,7 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 }
+
+html {
+  scroll-behavior: smooth;
+}
