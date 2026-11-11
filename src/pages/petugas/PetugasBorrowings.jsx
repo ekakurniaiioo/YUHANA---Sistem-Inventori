@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Sidebar } from "../../components/sidebar/Sidebar";
 import { Eye } from "lucide-react";
 import { DataTable } from "../../components/ui/DataTable";
+import { Input } from "../../components/ui/Input";
+import { Select } from "../../components/ui/Select";
 
 export function PetugasBorrowings() {
   const [isOpen, setIsOpen] = useState(false);
@@ -57,24 +59,23 @@ export function PetugasBorrowings() {
                   <path d="m21 21-4.3-4.3"></path>
                 </g>
               </svg>
-              <input
+              <Input
                 type="search"
                 placeholder="Search borrower..."
-                className="bg-transparent border-none outline-none w-full placeholder:text-text/40 text-sm"
               />
             </label>
 
-            <select
+            <Select
               defaultValue="Status"
-              className="select bg-surface border border-border rounded-md px-3 py-2 text-sm text-text cursor-pointer focus:outline-none"
-            >
-              <option disabled={true}>Status</option>
-              <option>Pending</option>
-              <option>Approved</option>
-              <option>Borrowed</option>
-              <option>Returned</option>
-              <option>Overdue</option>
-            </select>
+              options={[
+                { value: "Status", label: "Status", disabled: true },
+                { value: "Pending", label: "Pending" },
+                { value: "Approved", label: "Approved" },
+                { value: "Borrowed", label: "Borrowed" },
+                { value: "Returned", label: "Returned" },
+                { value: "Overdue", label: "Overdue" },
+              ]}
+            />
           </div>
         </section>
 
@@ -139,36 +140,7 @@ export function PetugasBorrowings() {
             />
           </div>
 
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50 text-sm font-poppins">
-            <p className="text-text/60 text-xs">
-              Showing <span className="font-semibold text-text">1</span> to{" "}
-              <span className="font-semibold text-text">1</span> of{" "}
-              <span className="font-semibold text-text">1</span> entries
-            </p>
 
-            <div className="flex items-center gap-1">
-              <button
-                disabled
-                className="px-3 py-1.5 rounded-md border border-border text-xs text-text/40 cursor-not-allowed bg-background/30"
-              >
-                Previous
-              </button>
-
-              <button className="w-8 h-8 rounded-md bg-text text-background text-xs font-semibold flex items-center justify-center">
-                1
-              </button>
-              <button className="w-8 h-8 rounded-md border border-border text-text/80 hover:bg-background/50 transition-colors text-xs flex items-center justify-center cursor-pointer">
-                2
-              </button>
-              <button className="w-8 h-8 rounded-md border border-border text-text/80 hover:bg-background/50 transition-colors text-xs flex items-center justify-center cursor-pointer">
-                3
-              </button>
-
-              <button className="px-3 py-1.5 rounded-md border border-border text-xs text-text/80 hover:bg-background/50 transition-colors cursor-pointer">
-                Next
-              </button>
-            </div>
-          </div>
         </section>
 
         {isOpen && (

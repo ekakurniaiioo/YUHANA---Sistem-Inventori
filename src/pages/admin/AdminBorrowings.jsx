@@ -2,9 +2,91 @@ import { useState } from "react";
 import { Sidebar } from "../../components/sidebar/Sidebar";
 import { Eye } from "lucide-react";
 import { DataTable } from "../../components/ui/DataTable";
+import { StatusBadge } from "../../components/ui/StatusBadge";
+import { Input } from "../../components/ui/Input";
+import { Select } from "../../components/ui/Select";
+import users from "../../data/users";
+import equipment from "../../data/equipment";
+import borrowings from "../../data/borrowings";
+import equipmentUnits from "../../data/equipmentUnits";
 
 export function AdminBorrowings() {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("Status");
+  const [selectedBorrowingId, setSelectedBorrowingId] = useState(null);
+  const status = [...new Set(borrowings.map((borrowing) => borrowing.status))];
+
+  const borrowingColumns = [
+    { header: "No", render: (_, index) => index + 1 },
+    {
+      header: "Peminjam",
+      accessor: "borrower",
+      cellClassName: "py-3.5 px-4 text-sm font-medium",
+    },
+    {
+      header: "Equipment",
+      accessor: "equipment",
+      cellClassName: "py-3.5 px-4 text-sm font-medium",
+    },
+    { header: "Tanggal Pinjam", accessor: "date" },
+    {
+      header: "Status",
+      render: (row) => <StatusBadge status={row.status} />,
+    },
+    {
+      header: "Actions",
+      headerClassName: "text-center",
+      cellClassName: "py-3.5 px-4 text-sm text-center",
+      render: (row) => (
+        <div className="flex items-center justify-center gap-1">
+          <button
+            onClick={() => {
+              setSelectedBorrowingId(row.id);
+              setIsOpen(true);
+            }}
+            aria-label="View borrowing details"
+            className="p-1.5 rounded-md text-text/70 hover:text-text hover:bg-background transition-colors cursor-pointer"
+          >
+            <Eye size={18} />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  const borrowingData = borrowings.map((item, index) => {
+    const user = users.find((user) => user.id === item.userId);
+
+    const unit = equipmentUnits.find((unit) => unit.id === item.unitId);
+
+    const name = equipment.find((name) => name.id === unit.equipmentId);
+
+    return {
+      id: item.id,
+      number: index + 1,
+      borrower: user ? user.name : "Unknown",
+      equipment: name ? name.name : "Unknown",
+      unitId: item.unitId,
+      date: item.borrowDate,
+      status: item.status,
+    };
+  });
+
+  const selectedBorrowing = borrowingData.find(
+    (item) => item.id === selectedBorrowingId,
+  );
+
+  const filteredBorrowings = borrowingData.filter((unit) => {
+    const matchesSearch =
+      unit.borrower.toLowerCase().includes(searchInput.toLowerCase()) ||
+      unit.equipment.toLowerCase().includes(searchInput.toLowerCase());
+
+    const macthesCategory =
+      selectedStatus === "Status" || unit.status === selectedStatus;
+
+    return matchesSearch && macthesCategory;
+  });
 
   return (
     <Sidebar>
@@ -37,23 +119,23 @@ export function AdminBorrowings() {
                   <path d="m21 21-4.3-4.3"></path>
                 </g>
               </svg>
-              <input
+              <Input
                 type="search"
                 placeholder="Search borrower..."
-                className="bg-transparent border-none outline-none w-full placeholder:text-text/40 text-sm"
+                onChange={(e) => setSearchInput(e.target.value)}
+                value={searchInput}
               />
             </label>
 
-            <select
+            <Select
               defaultValue="Status"
-              className="select bg-surface border border-border rounded-md px-3 py-2 text-sm text-text cursor-pointer focus:outline-none"
-            >
-              <option disabled={true}>Status</option>
-              <option>Pending</option>
-              <option>Approved</option>
-              <option>Borrowed</option>
-              <option>Returned</option>
-            </select>
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              value={selectedStatus}
+              options={[
+                { value: "Status", label: "Semua Status" },
+                ...status.map((item) => ({ value: item, label: item })),
+              ]}
+            />
           </div>
         </section>
 
@@ -65,87 +147,7 @@ export function AdminBorrowings() {
           </header>
 
           <div className="overflow-hidden rounded-md border border-border/50">
-            <DataTable
-              columns={[
-                { header: "No", accessor: "number" },
-                {
-                  header: "Peminjam",
-                  accessor: "borrower",
-                  cellClassName: "py-3.5 px-4 text-sm font-medium",
-                },
-                {
-                  header: "Equipment",
-                  accessor: "equipment",
-                  cellClassName: "py-3.5 px-4 text-sm font-medium",
-                },
-                { header: "Tanggal Pinjam", accessor: "date" },
-                {
-                  header: "Status",
-                  render: (row) => (
-                    <span className="bg-success/20 text-success px-2 py-1 rounded-sm text-xs font-medium">
-                      {row.status}
-                    </span>
-                  ),
-                },
-                {
-                  header: "Actions",
-                  headerClassName: "text-center",
-                  cellClassName: "py-3.5 px-4 text-sm text-center",
-                  render: () => (
-                    <div className="flex items-center justify-center gap-1">
-                      <button
-                        to="button"
-                        onClick={() => setIsOpen(true)}
-                        aria-label="View borrowing details"
-                        className="p-1.5 rounded-md text-text/70 hover:text-text hover:bg-background transition-colors cursor-pointer"
-                      >
-                        <Eye size={18} />
-                      </button>
-                    </div>
-                  ),
-                },
-              ]}
-              data={[
-                {
-                  number: 1,
-                  borrower: "Juun",
-                  equipment: "Sony A7 IV",
-                  date: "27 Oktober 2026",
-                  status: "Approved",
-                },
-              ]}
-            />
-          </div>
-
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50 text-sm font-poppins">
-            <p className="text-text/60 text-xs">
-              Showing <span className="font-semibold text-text">1</span> to{" "}
-              <span className="font-semibold text-text">1</span> of{" "}
-              <span className="font-semibold text-text">1</span> entries
-            </p>
-
-            <div className="flex items-center gap-1">
-              <button
-                disabled
-                className="px-3 py-1.5 rounded-md border border-border text-xs text-text/40 cursor-not-allowed bg-background/30"
-              >
-                Previous
-              </button>
-
-              <button className="w-8 h-8 rounded-md bg-text text-background text-xs font-semibold flex items-center justify-center">
-                1
-              </button>
-              <button className="w-8 h-8 rounded-md border border-border text-text/80 hover:bg-background/50 transition-colors text-xs flex items-center justify-center cursor-pointer">
-                2
-              </button>
-              <button className="w-8 h-8 rounded-md border border-border text-text/80 hover:bg-background/50 transition-colors text-xs flex items-center justify-center cursor-pointer">
-                3
-              </button>
-
-              <button className="px-3 py-1.5 rounded-md border border-border text-xs text-text/80 hover:bg-background/50 transition-colors cursor-pointer">
-                Next
-              </button>
-            </div>
+            <DataTable columns={borrowingColumns} data={filteredBorrowings} />
           </div>
         </section>
 
@@ -165,24 +167,34 @@ export function AdminBorrowings() {
                 </button>
               </div>
 
-              <div className="space-y-4 text-sm font-inter">
-                <p>
-                  <span className="text-text/60">Borrower:</span> Juun
-                </p>
+              {selectedBorrowing && (
+                <div className="space-y-4 text-sm font-inter">
+                  <p>
+                    <span className="text-text/60">Borrower: </span>
+                    {selectedBorrowing.borrower}
+                  </p>
 
-                <p>
-                  <span className="text-text/60">Equipment:</span> Sony A7 IV
-                </p>
+                  <p>
+                    <span className="text-text/60">Equipment: </span>
+                    {selectedBorrowing.equipment}
+                  </p>
 
-                <p>
-                  <span className="text-text/60">Borrow Date:</span> 27 Oktober
-                  2026
-                </p>
+                  <p>
+                    <span className="text-text/60">Unit Id: </span>
+                    {selectedBorrowing.unitId}
+                  </p>
 
-                <p>
-                  <span className="text-text/60">Status:</span> Approved
-                </p>
-              </div>
+                  <p>
+                    <span className="text-text/60">Borrow Date: </span>
+                    {selectedBorrowing.date}
+                  </p>
+
+                  <p>
+                    <span className="text-text/60">Status: </span>
+                    {selectedBorrowing.status}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}

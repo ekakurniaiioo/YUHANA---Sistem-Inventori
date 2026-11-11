@@ -30,7 +30,7 @@ function App() {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/equipment" element={<AdminEquipment />} />
           <Route
-            path="/admin/equipment/detail"
+            path="/admin/equipment/:id"
             element={<AdminEquipmentDetail />}
           />
           <Route path="/admin/users" element={<AdminUsers />} />

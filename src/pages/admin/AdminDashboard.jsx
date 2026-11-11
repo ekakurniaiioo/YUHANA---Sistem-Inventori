@@ -1,13 +1,107 @@
 import { Sidebar } from "../../components/sidebar/Sidebar";
 import { DataTable } from "../../components/ui/DataTable";
+import { ConditionBadge } from "../../components/ui/ConditionBadge";
+import { StatusBadge } from "../../components/ui/StatusBadge";
+import borrowings from "../../data/borrowings";
+import users from "../../data/users";
+import equipment from "../../data/equipment";
+import equipmentUnits from "../../data/equipmentUnits";
 
 export function AdminDashboard() {
   const summaryItems = [
-    { title: "Total Equipment", value: 135 },
-    { title: "Available Equipment", value: 93 },
-    { title: "Borrowed Equipment", value: 35 },
-    { title: "Equipment in Maintenance", value: 7 },
+    { title: "Total Equipment", value: equipment.length },
+    { title: "Total Units", value: equipmentUnits.length },
+    {
+      title: "Available Units",
+      value: equipmentUnits.filter((item) => item.status === "Available")
+        .length,
+    },
+    {
+      title: "Total Borrowed",
+      value: users.filter((user) => user.role === "Peminjam").length,
+    },
   ];
+
+  const activeBorrowings = [
+    { header: "Peminjam", accessor: "borrowerName" },
+    { header: "Equipment", accessor: "equipmentName" },
+    { header: "Unit ID", accessor: "unitId" },
+    { header: "Due Date", accessor: "dueDate" },
+    {
+      header: "Status",
+      accessor: "status",
+      render: (row) => <StatusBadge status={row.status} />,
+    },
+  ];
+  const equipmentAttention = [
+    { header: "Equipment", accessor: "equipment" },
+    {
+      header: "Issue",
+      accessor: "issue",
+      render: (row) => <ConditionBadge condition={row.issue} />,
+    },
+  ];
+
+  const pendingRequests = [
+    { header: "Borrower", accessor: "borrower" },
+    { header: "Equipment", accessor: "equipment" },
+    { header: "Date Requested", accessor: "dateRequested" },
+    {
+      header: "Status",
+      accessor: "status",
+      render: (row) => <StatusBadge status={row.status} />,
+    },
+  ];
+
+  const borrowingData = borrowings
+    .filter((borrowing) => borrowing.status === "Borrowed")
+    .map((borrowing) => {
+      const user = users.find((user) => user.id === borrowing.userId);
+
+      const unit = equipmentUnits.find((unit) => unit.id === borrowing.unitId);
+
+      const item = equipment.find((item) => item.id === unit?.equipmentId);
+
+      return {
+        borrowerName: user?.name,
+        equipmentName: item?.name,
+        unitId: borrowing.unitId,
+        dueDate: borrowing.dueDate,
+        status: borrowing.status,
+      };
+    });
+
+  const equipmentAttentionData = equipmentUnits
+    .filter(
+      (unit) =>
+        unit.condition === "Damaged" || unit.condition === "Maintenance",
+    )
+    .map((unit) => {
+      const item = equipment.find((item) => item.id === unit.equipmentId);
+
+      return {
+        equipment: item?.name,
+        issue: unit.condition,
+      };
+    });
+
+  const pendingRequestsData = borrowings
+    .filter((borrowing) => borrowing.status === "Pending")
+    .map((borrowing) => {
+      const user = users.find((user) => user.id === borrowing.userId);
+
+      const unit = equipmentUnits.find((unit) => unit.id === borrowing.unitId);
+
+      const item = equipment.find((item) => item.id === unit?.equipmentId);
+
+      return {
+        id: borrowing.id,
+        equipment: item?.name ?? "—",
+        borrower: user?.name ?? "—",
+        dateRequested: borrowing.borrowDate ?? "—",
+        status: borrowing.status,
+      };
+    });
 
   return (
     <Sidebar>
@@ -44,27 +138,8 @@ export function AdminDashboard() {
             </header>
 
             <DataTable
-              columns={[
-                { header: "Borrower", accessor: "borrower" },
-                { header: "Equipment", accessor: "equipment" },
-                { header: "Due Date", accessor: "dueDate" },
-                {
-                  header: "Status",
-                  render: (row) => (
-                    <span className="bg-success/20 text-success px-2 py-1 rounded-sm text-xs font-medium">
-                      {row.status}
-                    </span>
-                  ),
-                },
-              ]}
-              data={[
-                {
-                  borrower: "Juun",
-                  equipment: "LED Panel",
-                  dueDate: "5 Oct 2026",
-                  status: "Active",
-                },
-              ]}
+              columns={activeBorrowings}
+              data={borrowingData}
               bodyClassName=""
               rowClassName="text-left border-b border-border"
               headerCellClassName="py-3 px-4 text-xs font-semibold font-poppins tracking-wider uppercase text-text/60"
@@ -80,18 +155,8 @@ export function AdminDashboard() {
             </header>
 
             <DataTable
-              columns={[
-                { header: "Equipment", accessor: "equipment" },
-                {
-                  header: "Issue",
-                  render: (row) => (
-                    <span className="bg-danger/20 text-danger px-2 py-1 rounded-sm text-xs font-medium">
-                      {row.issue}
-                    </span>
-                  ),
-                },
-              ]}
-              data={[{ equipment: "Tripod", issue: "Damaged" }]}
+              columns={equipmentAttention}
+              data={equipmentAttentionData}
               bodyClassName=""
               rowClassName="text-left border-b border-border"
               headerCellClassName="py-3 px-4 text-xs font-semibold font-poppins tracking-wider uppercase text-text/60"
@@ -102,31 +167,16 @@ export function AdminDashboard() {
 
         <section className="mt-6 bg-surface border border-border text-text p-6 text-center font-poppins rounded-lg">
           <header className="mb-4">
-            <h2 className="text-lg font-semibold text-left">Recent Returns</h2>
+            <h2 className="text-lg font-semibold text-left">
+              Pending Requests
+            </h2>
           </header>
 
           <DataTable
-            columns={[
-              { header: "Equipment", accessor: "equipment" },
-              { header: "Borrower", accessor: "borrower" },
-              { header: "Date Returned", accessor: "dateReturned" },
-              {
-                header: "Condition",
-                render: (row) => (
-                  <span className="bg-danger/20 text-danger px-2 py-1 rounded-sm text-xs font-medium">
-                    {row.condition}
-                  </span>
-                ),
-              },
-            ]}
-            data={[
-              {
-                equipment: "Tripod",
-                borrower: "Stella",
-                dateReturned: "5 Oct 2026",
-                condition: "Damaged",
-              },
-            ]}
+            columns={pendingRequests}
+            data={pendingRequestsData}
+            getRowKey={(row) => row.id}
+            emptyMessage="No pending requests."
             bodyClassName=""
             rowClassName="text-left border-b border-border"
             headerCellClassName="py-3 px-4 text-xs font-semibold font-poppins tracking-wider uppercase text-text/60"

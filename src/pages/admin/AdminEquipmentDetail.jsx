@@ -1,47 +1,74 @@
+import { useState } from "react";
 import { Sidebar } from "../../components/sidebar/Sidebar";
-import { Link } from "react-router-dom";
 import { Trash, PenLine } from "lucide-react";
+import { useParams } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { DataTable } from "../../components/ui/DataTable";
+import { Input } from "../../components/ui/Input";
+import { Select } from "../../components/ui/Select";
+import { ConditionBadge } from "../../components/ui/ConditionBadge";
+import { StatusBadge } from "../../components/ui/StatusBadge";
+import equipment from "../../data/equipment";
+import equipmentUnits from "../../data/equipmentUnits";
 
 export function AdminEquipmentDetail() {
-  const equipmentUnits = [
+  const { id } = useParams();
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedCondition, setSelectedCondition] = useState("Semua Kondisi");
+  const [selectedStatus, setSelectedStatus] = useState("Semua Status");
+  const condition = [...new Set(equipmentUnits.map((unit) => unit.condition))];
+  const status = [...new Set(equipmentUnits.map((unit) => unit.status))];
+
+  const equipmentUnitsColumns = [
+    { header: "Unit ID", accessor: "id" },
     {
-      unitId: "CAM-001",
-      name: "Sony A7 IV",
-      category: "Camera",
-      condition: "Good",
-      status: "Available",
+      header: "Condition",
+      cellClassName: "py-3.5 px-4 text-sm",
+      render: (unit) => <ConditionBadge condition={unit.condition} />,
     },
     {
-      unitId: "CAM-002",
-      name: "Sony A7 IV",
-      category: "Camera",
-      condition: "Good",
-      status: "Available",
+      header: "Status",
+      cellClassName: "py-3.5 px-4 text-sm",
+      render: (unit) => <StatusBadge status={unit.status} />,
     },
     {
-      unitId: "CAM-003",
-      name: "Sony A7 IV",
-      category: "Camera",
-      condition: "Good",
-      status: "Available",
-    },
-    {
-      unitId: "CAM-004",
-      name: "Sony A7 IV",
-      category: "Camera",
-      condition: "Good",
-      status: "Available",
-    },
-    {
-      unitId: "CAM-005",
-      name: "Sony A7 IV",
-      category: "Camera",
-      condition: "Good",
-      status: "Available",
+      header: "Actions",
+      headerClassName: "text-center",
+      cellClassName: "py-3.5 px-4 text-sm text-center",
+      render: () => (
+        <div className="flex items-center justify-center gap-1">
+          <button
+            aria-label="Edit equipment"
+            className="p-1.5 rounded-md text-text/70 hover:text-text hover:bg-background transition-colors cursor-pointer"
+          >
+            <PenLine size={18} />
+          </button>
+          <button
+            aria-label="Delete equipment"
+            className="p-1.5 rounded-md text-danger/80 hover:text-danger hover:bg-danger/10 transition-colors cursor-pointer"
+          >
+            <Trash size={18} />
+          </button>
+        </div>
+      ),
     },
   ];
+
+
+  const selectedEquipment = equipment.find((item) => item.id === id);
+  const selectedUnits = equipmentUnits.filter(
+    (unit) => unit.equipmentId === id,
+  );
+
+  const filteredUnits = selectedUnits.filter((unit) => {
+    const matchesSearch = unit.id.toLowerCase().includes(searchInput.toLowerCase());
+    const matchesCondition =
+      selectedCondition === "Semua Kondisi" || unit.condition === selectedCondition;
+    const matchesStatus =
+      selectedStatus === "Semua Status" || unit.status === selectedStatus;
+
+    return matchesSearch && matchesCondition && matchesStatus;
+  });
 
   return (
     <Sidebar>
@@ -60,8 +87,10 @@ export function AdminEquipmentDetail() {
         </header>
 
         <section className="bg-surface border border-border text-text p-6 font-poppins rounded-lg mb-6">
-          <h2 className="text-xl font-bold">Sony A7 IV</h2>
-          <p className="text-text/60">Camera • {equipmentUnits.length} Units</p>
+          <h2 className="text-xl font-bold">{selectedEquipment?.name}</h2>
+          <p className="text-text/60">
+            {selectedEquipment?.category} • {selectedUnits.length} Units
+          </p>
         </section>
 
         <section className="flex gap-4 mb-6">
@@ -84,30 +113,31 @@ export function AdminEquipmentDetail() {
                     <path d="m21 21-4.3-4.3"></path>
                   </g>
                 </svg>
-                <input
+                <Input
                   type="search"
                   placeholder="Search unit..."
-                  className="bg-transparent border-none outline-none w-full placeholder:text-text/40 text-sm"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
                 />
               </label>
 
-              <select
-                defaultValue="Condition"
-                className="select bg-surface border border-border rounded-md px-3 py-2 text-sm text-text cursor-pointer focus:outline-none"
-              >
-                <option disabled={true}>Condition</option>
-                <option>Good</option>
-                <option>Damaged</option>
-              </select>
+              <Select
+                value={selectedCondition}
+                onChange={(e) => setSelectedCondition(e.target.value)}
+                options={[
+                  { value: "Semua Kondisi", label: "Semua Kondisi" },
+                  ...condition.map((item) => ({ value: item, label: item })),
+                ]}
+              />
 
-              <select
-                defaultValue="Status"
-                className="select bg-surface border border-border rounded-md px-3 py-2 text-sm text-text cursor-pointer focus:outline-none"
-              >
-                <option disabled={true}>Status</option>
-                <option>Available</option>
-                <option>Borrowed</option>
-              </select>
+              <Select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                options={[
+                  { value: "Semua Status", label: "Semua Status" },
+                  ...status.map((item) => ({ value: item, label: item })),
+                ]}
+              />
             </div>
 
             <div className="shrink-0">
@@ -123,82 +153,10 @@ export function AdminEquipmentDetail() {
 
           <div className="overflow-hidden rounded-md border border-border/50">
             <DataTable
-              columns={[
-                { header: "Unit ID", accessor: "unitId" },
-                {
-                  header: "Condition",
-                  cellClassName: "py-3.5 px-4 text-sm",
-                  render: (unit) => (
-                    <span className="inline-block bg-success/15 text-success border border-success/20 px-2.5 py-0.5 rounded-lg text-xs font-medium">
-                      {unit.condition}
-                    </span>
-                  ),
-                },
-                {
-                  header: "Status",
-                  cellClassName: "py-3.5 px-4 text-sm",
-                  render: (unit) => (
-                    <span className="inline-block bg-success/15 text-success border border-success/20 px-2.5 py-0.5 rounded-lg text-xs font-medium">
-                      {unit.status}
-                    </span>
-                  ),
-                },
-                {
-                  header: "Actions",
-                  headerClassName: "text-center",
-                  cellClassName: "py-3.5 px-4 text-sm text-center",
-                  render: () => (
-                    <div className="flex items-center justify-center gap-1">
-                      <button
-                        aria-label="Edit equipment"
-                        className="p-1.5 rounded-md text-text/70 hover:text-text hover:bg-background transition-colors cursor-pointer"
-                      >
-                        <PenLine size={18} />
-                      </button>
-                      <button
-                        aria-label="Delete equipment"
-                        className="p-1.5 rounded-md text-danger/80 hover:text-danger hover:bg-danger/10 transition-colors cursor-pointer"
-                      >
-                        <Trash size={18} />
-                      </button>
-                    </div>
-                  ),
-                },
-              ]}
-              data={equipmentUnits}
-              getRowKey={(unit) => unit.unitId}
+              columns={equipmentUnitsColumns}
+              data={filteredUnits}
+              getRowKey={(row) => row.unitId}
             />
-          </div>
-
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50 text-sm font-poppins">
-            <p className="text-text/60 text-xs">
-              Showing <span className="font-semibold text-text">1</span> to{" "}
-              <span className="font-semibold text-text">1</span> of{" "}
-              <span className="font-semibold text-text">1</span> entries
-            </p>
-
-            <div className="flex items-center gap-1">
-              <button
-                disabled
-                className="px-3 py-1.5 rounded-md border border-border text-xs text-text/40 cursor-not-allowed bg-background/30"
-              >
-                Previous
-              </button>
-
-              <button className="w-8 h-8 rounded-md bg-text text-background text-xs font-semibold flex items-center justify-center">
-                1
-              </button>
-              <button className="w-8 h-8 rounded-md border border-border text-text/80 hover:bg-background/50 transition-colors text-xs flex items-center justify-center cursor-pointer">
-                2
-              </button>
-              <button className="w-8 h-8 rounded-md border border-border text-text/80 hover:bg-background/50 transition-colors text-xs flex items-center justify-center cursor-pointer">
-                3
-              </button>
-
-              <button className="px-3 py-1.5 rounded-md border border-border text-xs text-text/80 hover:bg-background/50 transition-colors cursor-pointer">
-                Next
-              </button>
-            </div>
           </div>
         </section>
       </main>

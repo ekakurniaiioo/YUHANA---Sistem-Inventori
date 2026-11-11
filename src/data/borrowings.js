@@ -2,7 +2,7 @@ export const borrowings = [
   {
     id: "BRW-001",
     userId: "USR-004",
-    unitId: "CAM-002",
+    unitId: "EQ-001-002",
     borrowDate: "2026-10-27",
     dueDate: "2026-11-03",
     status: "Borrowed",
@@ -10,7 +10,7 @@ export const borrowings = [
   {
     id: "BRW-002",
     userId: "USR-005",
-    unitId: "LEN-002",
+    unitId: "EQ-002-002",
     borrowDate: "2026-10-27",
     dueDate: "2026-11-02",
     status: "Borrowed",
@@ -18,7 +18,7 @@ export const borrowings = [
   {
     id: "BRW-003",
     userId: "USR-006",
-    unitId: "STB-003",
+    unitId: "EQ-003-003",
     borrowDate: "2026-10-26",
     dueDate: "2026-10-29",
     status: "Overdue",
@@ -26,7 +26,7 @@ export const borrowings = [
   {
     id: "BRW-004",
     userId: "USR-007",
-    unitId: "LGT-002",
+    unitId: "EQ-004-002",
     borrowDate: "2026-10-28",
     dueDate: "2026-11-04",
     status: "Borrowed",
@@ -34,7 +34,7 @@ export const borrowings = [
   {
     id: "BRW-005",
     userId: "USR-008",
-    unitId: "AUD-002",
+    unitId: "EQ-005-002",
     borrowDate: "2026-10-28",
     dueDate: "2026-11-05",
     status: "Borrowed",
@@ -42,7 +42,7 @@ export const borrowings = [
   {
     id: "BRW-006",
     userId: "USR-008",
-    unitId: "TRI-003",
+    unitId: "EQ-006-003",
     borrowDate: "2026-10-25",
     dueDate: "2026-10-28",
     status: "Overdue",
@@ -50,7 +50,7 @@ export const borrowings = [
   {
     id: "BRW-007",
     userId: "USR-004",
-    unitId: "STR-003",
+    unitId: "EQ-007-003",
     borrowDate: "2026-10-27",
     dueDate: "2026-11-01",
     status: "Borrowed",
@@ -58,15 +58,16 @@ export const borrowings = [
   {
     id: "BRW-008",
     userId: "USR-004",
-    unitId: "DRN-002",
+    unitId: "EQ-008-002",
     borrowDate: "2026-10-28",
     dueDate: "2026-11-06",
     status: "Borrowed",
   },
+
   {
     id: "BRW-009",
     userId: "USR-004",
-    unitId: "CAM-001",
+    unitId: "EQ-001-001",
     borrowDate: "2026-10-29",
     dueDate: "2026-11-05",
     status: "Pending",
@@ -74,10 +75,59 @@ export const borrowings = [
   {
     id: "BRW-010",
     userId: "USR-005",
-    unitId: "LEN-001",
+    unitId: "EQ-002-001",
     borrowDate: "2026-10-29",
     dueDate: "2026-11-06",
     status: "Approved",
+  },
+
+  {
+    id: "BRW-011",
+    userId: "USR-005",
+    unitId: "EQ-009-002",
+    borrowDate: "2026-10-28",
+    dueDate: "2026-11-04",
+    status: "Borrowed",
+  },
+  {
+    id: "BRW-012",
+    userId: "USR-006",
+    unitId: "EQ-011-001",
+    borrowDate: "2026-10-28",
+    dueDate: "2026-11-04",
+    status: "Borrowed",
+  },
+  {
+    id: "BRW-013",
+    userId: "USR-007",
+    unitId: "EQ-014-002",
+    borrowDate: "2026-10-27",
+    dueDate: "2026-11-02",
+    status: "Borrowed",
+  },
+  {
+    id: "BRW-014",
+    userId: "USR-006",
+    unitId: "EQ-016-002",
+    borrowDate: "2026-10-29",
+    dueDate: "2026-11-05",
+    status: "Borrowed",
+  },
+  {
+    id: "BRW-015",
+    userId: "USR-007",
+    unitId: "EQ-019-001",
+    borrowDate: "2026-10-26",
+    dueDate: "2026-10-30",
+    status: "Overdue",
+  },
+  {
+    id: "BRW-016",
+    userId: "USR-008",
+    unitId: "EQ-021-002",
+    borrowDate: "2026-10-29",
+    dueDate: "2026-11-06",
+    status: "Borrowed",
   },
 ];
 

@@ -1,4 +1,4 @@
-import { LayoutDashboard, Camera, Users, ClipboardList } from "lucide-react";
+import { LayoutDashboard, Camera, Users, ClipboardList, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { SidebarItem } from "./SidebarItem";
 import { useSidebarState } from "./SidebarState";
@@ -107,9 +107,18 @@ export function Sidebar({ children, role = "admin" }) {
               ))}
             </ul>
           </div>
-          <Button variant="darkGold" onClick={handleLogout}>
-            Logout
-          </Button>
+          <div className="mt-auto w-full border-t border-border p-3 is-drawer-close:px-2">
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              aria-label="Logout"
+              data-tip="Logout"
+              className="group w-full justify-start gap-3 rounded-sm border-transparent px-3 py-2.5 font-poppins text-[13px] font-medium tracking-wide text-text-secondary transition-colors duration-150 hover:border-border hover:bg-surface-light hover:text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold is-drawer-close:tooltip is-drawer-close:tooltip-right is-drawer-close:justify-center is-drawer-close:px-0"
+            >
+              <LogOut size={18} strokeWidth={1.8} aria-hidden="true" className="shrink-0" />
+              <span className="is-drawer-close:hidden">Logout</span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import equipment from "../data/equipment";
 
 export function Equipment() {
-  const categories = equipment.map((item) => item.category);
+  const categories = equipment.slice(0, 7).map((item) => item.category);
 
   return (
     <section

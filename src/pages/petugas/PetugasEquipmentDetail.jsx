@@ -2,6 +2,8 @@ import { Sidebar } from "../../components/sidebar/Sidebar";
 import { Link } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { DataTable } from "../../components/ui/DataTable";
+import { Input } from "../../components/ui/Input";
+import { Select } from "../../components/ui/Select";
 
 export function PetugasEquipmentDetail() {
   const equipmentUnits = [
@@ -87,30 +89,29 @@ export function PetugasEquipmentDetail() {
                   <path d="m21 21-4.3-4.3"></path>
                 </g>
               </svg>
-              <input
+              <Input
                 type="search"
                 placeholder="Search unit..."
-                className="bg-transparent border-none outline-none w-full placeholder:text-text/40 text-sm"
               />
             </label>
 
-            <select
+            <Select
               defaultValue="Condition"
-              className="select bg-surface border border-border rounded-md px-3 py-2 text-sm text-text cursor-pointer focus:outline-none"
-            >
-              <option disabled={true}>Condition</option>
-              <option>Good</option>
-              <option>Damaged</option>
-            </select>
+              options={[
+                { value: "Condition", label: "Condition", disabled: true },
+                { value: "Good", label: "Good" },
+                { value: "Damaged", label: "Damaged" },
+              ]}
+            />
 
-            <select
+            <Select
               defaultValue="Status"
-              className="select bg-surface border border-border rounded-md px-3 py-2 text-sm text-text cursor-pointer focus:outline-none"
-            >
-              <option disabled={true}>Status</option>
-              <option>Available</option>
-              <option>Borrowed</option>
-            </select>
+              options={[
+                { value: "Status", label: "Status", disabled: true },
+                { value: "Available", label: "Available" },
+                { value: "Borrowed", label: "Borrowed" },
+              ]}
+            />
           </div>
         </section>
 
@@ -148,30 +149,7 @@ export function PetugasEquipmentDetail() {
             />
           </div>
 
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50 text-sm font-poppins">
-            <p className="text-text/60 text-xs">
-              Showing <span className="font-semibold text-text">1</span> to{" "}
-              <span className="font-semibold text-text">1</span> of{" "}
-              <span className="font-semibold text-text">1</span> entries
-            </p>
 
-            <div className="flex items-center gap-1">
-              <button
-                disabled
-                className="px-3 py-1.5 rounded-md border border-border text-xs text-text/40 cursor-not-allowed bg-background/30"
-              >
-                Previous
-              </button>
-
-              <button className="w-8 h-8 rounded-md bg-text text-background text-xs font-semibold flex items-center justify-center">
-                1
-              </button>
-
-              <button className="px-3 py-1.5 rounded-md border border-border text-xs text-text/80 hover:bg-background/50 transition-colors cursor-pointer">
-                Next
-              </button>
-            </div>
-          </div>
         </section>
       </main>
     </Sidebar>
