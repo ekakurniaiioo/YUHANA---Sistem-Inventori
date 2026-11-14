@@ -8,11 +8,12 @@ import {
   ClipboardList,
 } from "lucide-react";
 import { NavbarPeminjam } from "../../components/navbar/NavbarPeminjam";
+import { FooterPeminjam } from "../../components/footer/FooterPeminjam";
 import { Button } from "../../components/ui/Button";
 
 export function PeminjamCart() {
   return (
-    <main className="min-h-screen bg-[#F5F4F0]">
+    <main className="flex min-h-screen flex-col bg-[#F5F4F0]">
       <NavbarPeminjam />
 
       <header className="flex flex-col gap-3 px-8 pt-32 lg:px-16">
@@ -30,7 +31,7 @@ export function PeminjamCart() {
         </p>
       </header>
 
-      <section className="mx-auto grid max-w-[1600px] grid-cols-1 gap-8 px-8 py-10 lg:grid-cols-3 lg:px-16">
+      <section className="mx-auto grid w-full max-w-[1600px] flex-1 grid-cols-1 gap-8 px-8 py-10 lg:grid-cols-3 lg:px-16">
         <div className="flex flex-col gap-5 lg:col-span-2">
           <div className="flex items-center gap-3">
             <Package size={30} className="text-[#A88B50]" />
@@ -186,6 +187,7 @@ export function PeminjamCart() {
           </p>
         </aside>
       </section>
+      <FooterPeminjam />
     </main>
   );
 }

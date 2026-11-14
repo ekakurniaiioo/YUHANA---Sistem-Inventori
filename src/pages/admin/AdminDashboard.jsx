@@ -3,6 +3,7 @@ import { DataTable } from "../../components/ui/DataTable";
 import { ConditionBadge } from "../../components/ui/ConditionBadge";
 import { StatusBadge } from "../../components/ui/StatusBadge";
 import borrowings from "../../data/borrowings";
+import borrowingItems from "../../data/borrowingItems";
 import users from "../../data/users";
 import equipment from "../../data/equipment";
 import equipmentUnits from "../../data/equipmentUnits";
@@ -17,7 +18,7 @@ export function AdminDashboard() {
         .length,
     },
     {
-      title: "Total Borrowed",
+      title: "Total Borrowers",
       value: users.filter((user) => user.role === "Peminjam").length,
     },
   ];
@@ -44,6 +45,7 @@ export function AdminDashboard() {
 
   const pendingRequests = [
     { header: "Borrower", accessor: "borrower" },
+    { header: "Transaction ID", accessor: "transactionId" },
     { header: "Equipment", accessor: "equipment" },
     { header: "Date Requested", accessor: "dateRequested" },
     {
@@ -53,28 +55,40 @@ export function AdminDashboard() {
     },
   ];
 
-  const borrowingData = borrowings
-    .filter((borrowing) => borrowing.status === "Borrowed")
-    .map((borrowing) => {
-      const user = users.find((user) => user.id === borrowing.userId);
+  const borrowingItemsData = borrowings.flatMap((borrowing) => {
+    const user = users.find((user) => user.id === borrowing.userId);
 
-      const unit = equipmentUnits.find((unit) => unit.id === borrowing.unitId);
+    return borrowingItems
+      .filter((item) => item.borrowingId === borrowing.id)
+      .map((borrowingItem) => {
+        const unit = equipmentUnits.find(
+          (unit) => unit.id === borrowingItem.unitId,
+        );
+        const item = equipment.find(
+          (item) => item.id === unit?.equipmentId,
+        );
 
-      const item = equipment.find((item) => item.id === unit?.equipmentId);
+        return {
+          id: borrowingItem.id,
+          transactionId: borrowing.id,
+          borrowerName: user?.name ?? "Unknown",
+          equipmentName: item?.name ?? "Unknown",
+          unitId: unit?.id ?? borrowingItem.unitId ?? "Unknown",
+          dueDate: borrowing.dueDate ?? "—",
+          dateRequested: borrowing.borrowDate ?? "—",
+          status: borrowing.status,
+        };
+      });
+  });
 
-      return {
-        borrowerName: user?.name,
-        equipmentName: item?.name,
-        unitId: borrowing.unitId,
-        dueDate: borrowing.dueDate,
-        status: borrowing.status,
-      };
-    });
+  const borrowingData = borrowingItemsData.filter(
+    (item) => item.status === "Borrowed" || item.status === "Overdue",
+  );
 
   const equipmentAttentionData = equipmentUnits
     .filter(
       (unit) =>
-        unit.condition === "Damaged" || unit.condition === "Maintenance",
+        unit.condition === "Damaged" || unit.status === "Maintenance",
     )
     .map((unit) => {
       const item = equipment.find((item) => item.id === unit.equipmentId);
@@ -85,23 +99,16 @@ export function AdminDashboard() {
       };
     });
 
-  const pendingRequestsData = borrowings
-    .filter((borrowing) => borrowing.status === "Pending")
-    .map((borrowing) => {
-      const user = users.find((user) => user.id === borrowing.userId);
-
-      const unit = equipmentUnits.find((unit) => unit.id === borrowing.unitId);
-
-      const item = equipment.find((item) => item.id === unit?.equipmentId);
-
-      return {
-        id: borrowing.id,
-        equipment: item?.name ?? "—",
-        borrower: user?.name ?? "—",
-        dateRequested: borrowing.borrowDate ?? "—",
-        status: borrowing.status,
-      };
-    });
+  const pendingRequestsData = borrowingItemsData
+    .filter((item) => item.status === "Pending")
+    .map((item) => ({
+      id: item.id,
+      transactionId: item.transactionId,
+      equipment: item.equipmentName,
+      borrower: item.borrowerName,
+      dateRequested: item.dateRequested,
+      status: item.status,
+    }));
 
   return (
     <Sidebar>
@@ -140,6 +147,7 @@ export function AdminDashboard() {
             <DataTable
               columns={activeBorrowings}
               data={borrowingData}
+              getRowKey={(row) => row.id}
               bodyClassName=""
               rowClassName="text-left border-b border-border"
               headerCellClassName="py-3 px-4 text-xs font-semibold font-poppins tracking-wider uppercase text-text/60"

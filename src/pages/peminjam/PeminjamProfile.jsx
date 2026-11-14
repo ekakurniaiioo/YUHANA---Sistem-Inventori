@@ -8,14 +8,26 @@ import {
   Camera,
 } from "lucide-react";
 import { NavbarPeminjam } from "../../components/navbar/NavbarPeminjam";
+import { FooterPeminjam } from "../../components/footer/FooterPeminjam";
 import { Button } from "../../components/ui/Button";
+import users from "../../data/users";
+import { getCurrentUser } from "../../utils/auth";
 
 export function PeminjamProfile() {
+  const currentUser = getCurrentUser();
+  const currentBorrower =
+    currentUser?.role === "Peminjam"
+      ? users.find(
+          (user) =>
+            user.id === currentUser.id && user.role === "Peminjam",
+        )
+      : null;
+
   return (
-    <main className="min-h-screen bg-[#F5F4F0]">
+    <main className="flex min-h-screen flex-col bg-[#F5F4F0]">
       <NavbarPeminjam />
 
-      <div className="mx-auto max-w-[1400px] px-8 pb-16 pt-32 lg:px-16">
+      <div className="mx-auto w-full max-w-[1400px] flex-1 px-8 pb-16 pt-32 lg:px-16">
         <div className="mb-10">
           <p className="mb-2 text-xs font-bold tracking-[0.2em] text-[#A88B50]">
             ACCOUNT SETTINGS
@@ -26,7 +38,7 @@ export function PeminjamProfile() {
           </h1>
 
           <p className="mt-2 text-sm text-black/50">
-            Kelola informasi akun dan keamanan profilmu.
+            Informasi akun dan keamanan profilmu.
           </p>
         </div>
 
@@ -40,17 +52,22 @@ export function PeminjamProfile() {
 
                 <button
                   type="button"
-                  className="absolute bottom-0 right-0 flex size-9 items-center justify-center rounded-full border-2 border-white bg-[#24231F] text-white"
+                  aria-label="Ubah foto profil belum tersedia"
+                  title="Ubah foto profil belum tersedia"
+                  disabled
+                  className="absolute bottom-0 right-0 flex size-9 cursor-not-allowed items-center justify-center rounded-full border-2 border-white bg-[#24231F] text-white opacity-50"
                 >
                   <Camera size={16} />
                 </button>
               </div>
 
               <h2 className="mt-5 font-poppins text-xl font-semibold text-[#24231F]">
-                Wonyoung
+                {currentBorrower?.name ?? "-"}
               </h2>
 
-              <p className="mt-1 text-sm text-black/50">wonyoung@yuhana.com</p>
+              <p className="mt-1 text-sm text-black/50">
+                {currentBorrower?.email ?? "-"}
+              </p>
 
               <span className="mt-4 rounded-full bg-[#F0EEE8] px-4 py-2 text-xs font-semibold text-[#A88B50]">
                 Peminjam
@@ -62,12 +79,9 @@ export function PeminjamProfile() {
             <div className="flex flex-col gap-5">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-black/50">ID Pengguna</span>
-                <span className="font-semibold text-[#24231F]">USR-004</span>
-              </div>
-
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-black/50">Status Akun</span>
-                <span className="font-semibold text-green-700">Aktif</span>
+                <span className="font-semibold text-[#24231F]">
+                  {currentBorrower?.id ?? "-"}
+                </span>
               </div>
             </div>
           </aside>
@@ -87,7 +101,8 @@ export function PeminjamProfile() {
 
                 <button
                   type="button"
-                  className="flex items-center gap-2 text-sm font-semibold text-[#A88B50] hover:text-[#24231F]"
+                  disabled
+                  className="flex cursor-not-allowed items-center gap-2 text-sm font-semibold text-[#A88B50] opacity-50"
                 >
                   <Pencil size={16} />
                   Edit Profil
@@ -108,7 +123,7 @@ export function PeminjamProfile() {
 
                     <input
                       type="text"
-                      defaultValue="Wonyoung"
+                      defaultValue={currentBorrower?.name ?? ""}
                       disabled
                       className="w-full rounded-md border border-[#E7E4DC] bg-[#F5F4F0] py-3 pl-11 pr-4 text-sm text-black/60 outline-none"
                     />
@@ -128,7 +143,7 @@ export function PeminjamProfile() {
 
                     <input
                       type="email"
-                      defaultValue="wonyoung@yuhana.com"
+                      defaultValue={currentBorrower?.email ?? ""}
                       disabled
                       className="w-full rounded-md border border-[#E7E4DC] bg-[#F5F4F0] py-3 pl-11 pr-4 text-sm text-black/60 outline-none"
                     />
@@ -145,7 +160,7 @@ export function PeminjamProfile() {
                   </h2>
 
                   <p className="mt-1 text-sm text-black/50">
-                    Perbarui password untuk menjaga keamanan akunmu.
+                    Fitur perubahan kata sandi belum tersedia.
                   </p>
                 </div>
 
@@ -172,7 +187,8 @@ export function PeminjamProfile() {
                       <input
                         type="password"
                         placeholder="Masukkan password"
-                        className="w-full rounded-md border border-[#E7E4DC] bg-[#F5F4F0] py-3 pl-11 pr-4 text-sm outline-none focus:border-[#A88B50]"
+                        disabled
+                        className="w-full cursor-not-allowed rounded-md border border-[#E7E4DC] bg-[#F5F4F0] py-3 pl-11 pr-4 text-sm opacity-60 outline-none"
                       />
                     </div>
                   </div>
@@ -180,11 +196,11 @@ export function PeminjamProfile() {
               </div>
 
               <p className="mt-3 text-xs text-black/40">
-                Password baru minimal 6 karakter.
+                Pengelolaan kata sandi belum tersedia.
               </p>
 
               <div className="mt-7 flex justify-end">
-                <Button variant="darkGold">
+                <Button variant="darkGold" disabled>
                   <Save size={16} />
                   Simpan Password
                 </Button>
@@ -205,6 +221,7 @@ export function PeminjamProfile() {
           </section>
         </div>
       </div>
+      <FooterPeminjam />
     </main>
   );
 }

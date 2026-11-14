@@ -6,10 +6,14 @@ import { AdminEquipment } from "./pages/admin/AdminEquipment";
 import { AdminEquipmentDetail } from "./pages/admin/AdminEquipmentDetail";
 import { AdminUsers } from "./pages/admin/AdminUsers";
 import { AdminBorrowings } from "./pages/admin/AdminBorrowings";
+import { AdminBorrowerDetail } from "./pages/admin/AdminBorrowerDetail";
 import { PetugasDashboard } from "./pages/petugas/PetugasDashboard";
 import { PetugasEquipment } from "./pages/petugas/PetugasEquipment";
 import { PetugasEquipmentDetail } from "./pages/petugas/PetugasEquipmentDetail";
 import { PetugasBorrowings } from "./pages/petugas/PetugasBorrowings";
+import { PetugasBorrowerDetail } from "./pages/petugas/PetugasBorrowerDetail";
+import { PetugasPendingBorrowings } from "./pages/petugas/PetugasPendingBorrowings";
+import { PetugasBorrowingDetail } from "./pages/petugas/PetugasBorrowingDetail";
 import { PeminjamEquipment } from "./pages/peminjam/PeminjamEquipment";
 import { PeminjamEquipmentDetail } from "./pages/peminjam/PeminjamEquipmentDetail";
 import { PeminjamCart } from "./pages/peminjam/PeminjamCart";
@@ -35,22 +39,38 @@ function App() {
           />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/borrowings" element={<AdminBorrowings />} />
+          <Route
+            path="/admin/borrowings/:borrowerId"
+            element={<AdminBorrowerDetail />}
+          />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={["Petugas"]} />}>
           <Route path="/petugas" element={<PetugasDashboard />} />
           <Route path="/petugas/equipment" element={<PetugasEquipment />} />
           <Route
-            path="/petugas/equipment/detail"
+            path="/petugas/equipment/:id"
             element={<PetugasEquipmentDetail />}
           />
           <Route path="/petugas/borrowings" element={<PetugasBorrowings />} />
+          <Route
+            path="/petugas/borrowings/pending"
+            element={<PetugasPendingBorrowings />}
+          />
+          <Route
+            path="/petugas/borrowings/transaction/:id"
+            element={<PetugasBorrowingDetail />}
+          />
+          <Route
+            path="/petugas/borrowings/:borrowerId"
+            element={<PetugasBorrowerDetail />}
+          />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={["Peminjam"]} />}>
           <Route path="/peminjam" element={<PeminjamEquipment />} />
           <Route
-            path="/peminjam/detail"
+            path="/peminjam/detail/:id"
             element={<PeminjamEquipmentDetail />}
           />
           <Route path="/peminjam/cart" element={<PeminjamCart />} />

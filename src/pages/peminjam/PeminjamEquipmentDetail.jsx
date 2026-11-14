@@ -9,17 +9,33 @@ import {
   Video,
   ScanSearch,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { NavbarPeminjam } from "../../components/navbar/NavbarPeminjam";
+import { FooterPeminjam } from "../../components/footer/FooterPeminjam";
 import equipmentUnits from "../../data/equipmentUnits";
 import equipment from "../../data/equipment";
 import { Button } from "../../components/ui/Button";
 
 export function PeminjamEquipmentDetail() {
-  const currentEquipment = equipment.find((item) => item.id === "EQ-001");
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const statusLabel = {
+    Available: "Tersedia",
+    Borrowed: "Dipinjam",
+    Maintenance: "Maintenance",
+  };
+
+  const statusStyle = {
+    Available: "bg-green-100 text-green-800",
+    Borrowed: "bg-amber-100 text-amber-800",
+    Maintenance: "bg-[#FCE8E1] text-[#A94F32]",
+  };
+
+  const currentEquipment = equipment.find((item) => item.id === id);
 
   const availableUnits = equipmentUnits.filter(
-    (unit) => unit.equipmentId === "EQ-001" && unit.status === "Available",
+    (unit) => unit.equipmentId === id && unit.status === "Available",
   );
 
   const [selectedUnits, setSelectedUnits] = useState([]);
@@ -35,18 +51,37 @@ export function PeminjamEquipmentDetail() {
   function handleAddToCart() {
     if (selectedUnits.length === 0) return;
 
-    console.log("Unit yang dipilih:", selectedUnits);
+    navigate("/peminjam/cart");
   }
 
   if (!currentEquipment) {
-    return <p>Equipment tidak ditemukan.</p>;
+    return (
+      <main className="flex min-h-screen flex-col bg-[#F5F4F0]">
+        <NavbarPeminjam />
+
+        <div className="mx-auto w-full max-w-[1600px] flex-1 px-8 pb-16 pt-32 lg:px-16">
+          <h1 className="font-poppins text-2xl font-semibold text-[#24231F]">
+            Equipment tidak ditemukan.
+          </h1>
+
+          <Link
+            to="/peminjam"
+            className="mt-5 inline-flex items-center gap-2 text-sm text-black/60 hover:text-[#A88B50]"
+          >
+            <ArrowLeft size={18} />
+            Kembali ke Katalog
+          </Link>
+        </div>
+        <FooterPeminjam />
+      </main>
+    );
   }
 
   return (
-    <main className="min-h-screen bg-[#F5F4F0]">
+    <main className="flex min-h-screen flex-col bg-[#F5F4F0]">
       <NavbarPeminjam />
 
-      <div className="mx-auto max-w-[1600px] px-8 pb-16 pt-32 lg:px-16">
+      <div className="mx-auto w-full max-w-[1600px] flex-1 px-8 pb-16 pt-32 lg:px-16">
         <Link
           to="/peminjam"
           className="mb-8 inline-flex items-center gap-2 text-sm text-black/60 hover:text-[#A88B50]"
@@ -154,7 +189,7 @@ export function PeminjamEquipmentDetail() {
 
             <div className="flex flex-col gap-3">
               {equipmentUnits
-                .filter((unit) => unit.equipmentId === "EQ-001")
+                .filter((unit) => unit.equipmentId === id)
                 .map((unit) => {
                   const isAvailable = unit.status === "Available";
                   const isSelected = selectedUnits.includes(unit.id);
@@ -193,12 +228,11 @@ export function PeminjamEquipmentDetail() {
 
                       <span
                         className={`rounded-full px-2 py-1 text-xs ${
-                          isAvailable
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-600"
+                          statusStyle[unit.status] ??
+                          "bg-gray-100 text-gray-600"
                         }`}
                       >
-                        {isAvailable ? "Tersedia" : "Dipinjam"}
+                        {statusLabel[unit.status] ?? unit.status}
                       </span>
                     </button>
                   );
@@ -236,6 +270,7 @@ export function PeminjamEquipmentDetail() {
           </aside>
         </div>
       </div>
+      <FooterPeminjam />
     </main>
   );
 }

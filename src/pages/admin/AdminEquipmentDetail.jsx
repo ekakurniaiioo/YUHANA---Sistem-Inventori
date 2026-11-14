@@ -70,6 +70,23 @@ export function AdminEquipmentDetail() {
     return matchesSearch && matchesCondition && matchesStatus;
   });
 
+  if (!selectedEquipment) {
+    return (
+      <Sidebar>
+        <main className="min-h-screen bg-background p-6">
+          <header className="mb-6 flex flex-col">
+            <h1 className="font-poppins text-2xl font-bold tracking-tight">
+              Equipment not found
+            </h1>
+            <Button to="/admin/equipment" variant="dark" className="mt-4 w-fit">
+              &larr; Back to Equipment
+            </Button>
+          </header>
+        </main>
+      </Sidebar>
+    );
+  }
+
   return (
     <Sidebar>
       <main className="min-h-screen p-6 bg-background">
@@ -87,9 +104,9 @@ export function AdminEquipmentDetail() {
         </header>
 
         <section className="bg-surface border border-border text-text p-6 font-poppins rounded-lg mb-6">
-          <h2 className="text-xl font-bold">{selectedEquipment?.name}</h2>
+          <h2 className="text-xl font-bold">{selectedEquipment.name}</h2>
           <p className="text-text/60">
-            {selectedEquipment?.category} • {selectedUnits.length} Units
+            {selectedEquipment.category} • {selectedUnits.length} Units
           </p>
         </section>
 
@@ -155,7 +172,7 @@ export function AdminEquipmentDetail() {
             <DataTable
               columns={equipmentUnitsColumns}
               data={filteredUnits}
-              getRowKey={(row) => row.unitId}
+              getRowKey={(row) => row.id}
             />
           </div>
         </section>

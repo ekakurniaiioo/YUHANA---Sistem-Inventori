@@ -1,13 +1,68 @@
 import { Sidebar } from "../../components/sidebar/Sidebar";
 import { DataTable } from "../../components/ui/DataTable";
+import { StatusBadge } from "../../components/ui/StatusBadge";
+import users from "../../data/users";
+import equipment from "../../data/equipment";
+import borrowings from "../../data/borrowings";
+import borrowingItems from "../../data/borrowingItems";
+import equipmentUnits from "../../data/equipmentUnits";
 
 export function PetugasDashboard() {
   const summaryItems = [
-    { title: "Pending Request", value: 8 },
-    { title: "Currently Borrowed", value: 12 },
-    { title: "Returns Today", value: 4 },
-    { title: "Overdue", value: 2 },
+    {
+      title: "Pending Request",
+      value: borrowings.filter((item) => item.status === "Pending").length,
+    },
+    {
+      title: "Currently Borrowed",
+      value: borrowings.filter((item) => item.status === "Borrowed").length,
+    },
+    {
+      title: "Returns Today",
+      value: "—",
+    },
+    {
+      title: "Overdue",
+      value: borrowings.filter((item) => item.status === "Overdue").length,
+    },
   ];
+
+  const recentColumns = [
+    { header: "Borrower", accessor: "borrower" },
+    { header: "Equipment", accessor: "equipment" },
+    { header: "Unit Id", accessor: "unitId" },
+    { header: "Borrow Date", accessor: "borrowDate" },
+    { header: "Due Date", accessor: "dueDate" },
+    {
+      header: "Status",
+      render: (row) => <StatusBadge status={row.status} />,
+    },
+  ];
+
+  const recentData = borrowings.flatMap((borrowing) => {
+    const user = users.find((user) => user.id === borrowing.userId);
+
+    return borrowingItems
+      .filter((item) => item.borrowingId === borrowing.id)
+      .map((borrowingItem) => {
+        const unit = equipmentUnits.find(
+          (unit) => unit.id === borrowingItem.unitId,
+        );
+        const equipmentItem = equipment.find(
+          (equipmentItem) => equipmentItem.id === unit?.equipmentId,
+        );
+
+        return {
+          id: borrowingItem.id,
+          borrower: user?.name ?? "Unknown",
+          equipment: equipmentItem?.name ?? "Unknown",
+          unitId: unit?.id ?? borrowingItem.unitId ?? "Unknown",
+          borrowDate: borrowing.borrowDate ?? "—",
+          dueDate: borrowing.dueDate ?? "—",
+          status: borrowing.status,
+        };
+      });
+  });
 
   return (
     <Sidebar role="petugas">
@@ -41,27 +96,9 @@ export function PetugasDashboard() {
           </header>
 
           <DataTable
-            columns={[
-              { header: "Borrower", accessor: "borrower" },
-              { header: "Equipment", accessor: "equipment" },
-              { header: "Due Date", accessor: "dueDate" },
-              {
-                header: "Status",
-                render: (row) => (
-                  <span className="bg-success/20 text-success px-2 py-1 rounded-sm text-xs font-medium">
-                    {row.status}
-                  </span>
-                ),
-              },
-            ]}
-            data={[
-              {
-                borrower: "Juun",
-                equipment: "LED Panel",
-                dueDate: "5 Oct 2026",
-                status: "Active",
-              },
-            ]}
+            columns={recentColumns}
+            data={recentData}
+            getRowKey={(row) => row.id}
             bodyClassName=""
             rowClassName="text-left border-b border-border"
             headerCellClassName="py-3 px-4 text-xs font-semibold font-poppins tracking-wider uppercase text-text/60"

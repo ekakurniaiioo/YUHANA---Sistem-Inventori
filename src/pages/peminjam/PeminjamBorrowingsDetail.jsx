@@ -10,10 +10,13 @@ import {
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { NavbarPeminjam } from "../../components/navbar/NavbarPeminjam";
+import { FooterPeminjam } from "../../components/footer/FooterPeminjam";
 import borrowings from "../../data/borrowings";
+import borrowingItems from "../../data/borrowingItems";
 import equipmentUnits from "../../data/equipmentUnits";
 import equipment from "../../data/equipment";
 import users from "../../data/users";
+import { getCurrentUser } from "../../utils/auth";
 
 const statusStyles = {
   Pending: "bg-amber-100 text-amber-800",
@@ -39,15 +42,18 @@ function formatDate(date) {
 
 export function PeminjamBorrowingsDetail() {
   const { id } = useParams();
+  const loggedInUser = getCurrentUser();
 
-  const currentBorrowing = borrowings.find((item) => item.id === id);
+  const currentBorrowing = borrowings.find(
+    (item) => item.id === id && item.userId === loggedInUser?.id,
+  );
 
   if (!currentBorrowing) {
     return (
-      <main className="min-h-screen bg-[#F5F4F0]">
+      <main className="flex min-h-screen flex-col bg-[#F5F4F0]">
         <NavbarPeminjam />
 
-        <div className="mx-auto max-w-[1600px] px-8 pt-40 lg:px-16">
+        <div className="mx-auto w-full max-w-[1600px] flex-1 px-8 pt-40 lg:px-16">
           <h1 className="font-poppins text-2xl text-black font-semibold">
             Data peminjaman tidak ditemukan.
           </h1>
@@ -60,17 +66,28 @@ export function PeminjamBorrowingsDetail() {
             Kembali ke Peminjaman Saya
           </Link>
         </div>
+        <FooterPeminjam />
       </main>
     );
   }
 
-  const currentUnit = equipmentUnits.find(
-    (unit) => unit.id === currentBorrowing.unitId,
-  );
+  const currentItems = borrowingItems
+    .filter((item) => item.borrowingId === currentBorrowing.id)
+    .map((borrowingItem) => {
+      const unit = equipmentUnits.find(
+        (item) => item.id === borrowingItem.unitId,
+      );
+      const equipmentItem = equipment.find(
+        (item) => item.id === unit?.equipmentId,
+      );
 
-  const currentEquipment = equipment.find(
-    (item) => item.id === currentUnit?.equipmentId,
-  );
+      return {
+        id: borrowingItem.id,
+        unit,
+        unitId: unit?.id ?? borrowingItem.unitId,
+        equipment: equipmentItem,
+      };
+    });
 
   const currentUser = users.find((user) => user.id === currentBorrowing.userId);
 
@@ -82,13 +99,17 @@ export function PeminjamBorrowingsDetail() {
 
   const statusOrder = ["Pending", "Approved", "Borrowed"];
 
-  const currentStep = statusOrder.indexOf(currentBorrowing.status);
+  const timelineStatus =
+    currentBorrowing.status === "Overdue"
+      ? "Borrowed"
+      : currentBorrowing.status;
+  const currentStep = statusOrder.indexOf(timelineStatus);
 
   return (
-    <main className="min-h-screen bg-[#F5F4F0]">
+    <main className="flex min-h-screen flex-col bg-[#F5F4F0]">
       <NavbarPeminjam />
 
-      <div className="mx-auto max-w-[1600px] px-8 pb-16 pt-32 lg:px-16">
+      <div className="mx-auto w-full max-w-[1600px] flex-1 px-8 pb-16 pt-32 lg:px-16">
         <Link
           to="/peminjam/borrowings"
           className="mb-8 inline-flex items-center gap-2 text-sm text-black/60 transition-colors hover:text-[#A88B50]"
@@ -134,36 +155,47 @@ export function PeminjamBorrowingsDetail() {
                 </h2>
               </div>
 
-              {currentEquipment && (
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-[180px_1fr]">
-                  <div className="aspect-square overflow-hidden rounded-lg bg-[#F5F4F0]">
-                    <img
-                      src="/HeroPeminjam1.jpg"
-                      alt={currentEquipment.name}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
+              {currentItems.length ? (
+                <div className="flex flex-col gap-6">
+                  {currentItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="grid grid-cols-1 gap-6 sm:grid-cols-[180px_1fr]"
+                    >
+                      <div className="aspect-square overflow-hidden rounded-lg bg-[#F5F4F0]">
+                        <img
+                          src="/HeroPeminjam1.jpg"
+                          alt={item.equipment?.name ?? "Equipment tidak ditemukan"}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
 
-                  <div className="flex flex-col justify-center gap-3">
-                    <div>
-                      <p className="text-xs font-semibold tracking-wider text-[#A88B50]">
-                        {currentEquipment.category}
-                      </p>
+                      <div className="flex flex-col justify-center gap-3">
+                        <div>
+                          <p className="text-xs font-semibold tracking-wider text-[#A88B50]">
+                            {item.equipment?.category ?? "Kategori tidak ditemukan"}
+                          </p>
 
-                      <h3 className="mt-2 font-poppins text-xl font-semibold text-[#24231F]">
-                        {currentEquipment.name}
-                      </h3>
+                          <h3 className="mt-2 font-poppins text-xl font-semibold text-[#24231F]">
+                            {item.equipment?.name ?? "Equipment tidak ditemukan"}
+                          </h3>
 
-                      <p className="mt-1 text-sm text-black/50">
-                        {currentEquipment.id}
-                      </p>
+                          <p className="mt-1 text-sm text-black/50">
+                            {item.equipment?.id ?? item.unit?.equipmentId ?? "—"}
+                          </p>
+                        </div>
+
+                        <p className="text-sm leading-6 text-black/60">
+                          Unit ID: {item.unitId ?? "—"}
+                        </p>
+                      </div>
                     </div>
-
-                    <p className="text-sm leading-6 text-black/60">
-                      Equipment yang tercatat dalam transaksi peminjaman ini.
-                    </p>
-                  </div>
+                  ))}
                 </div>
+              ) : (
+                <p className="text-sm text-black/50">
+                  Equipment tidak ditemukan pada transaksi ini.
+                </p>
               )}
             </div>
 
@@ -176,21 +208,30 @@ export function PeminjamBorrowingsDetail() {
                 </h2>
               </div>
 
-              {currentUnit ? (
-                <div className="flex flex-col gap-3 rounded-lg border border-[#E7E4DC] p-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p className="text-sm font-semibold text-[#24231F]">
-                      {currentUnit.id}
-                    </p>
+              {currentItems.length ? (
+                <div className="flex flex-col gap-3">
+                  {currentItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex flex-col gap-3 rounded-lg border border-[#E7E4DC] p-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div>
+                        <p className="text-sm font-semibold text-[#24231F]">
+                          {item.unitId ?? "Unit tidak ditemukan"}
+                        </p>
 
-                    <p className="mt-1 text-xs text-black/50">
-                      Kondisi unit: {currentUnit.condition}
-                    </p>
-                  </div>
+                        <p className="mt-1 text-xs text-black/50">
+                          {item.unit
+                            ? `Kondisi unit: ${item.unit.condition}`
+                            : "Informasi unit tidak ditemukan."}
+                        </p>
+                      </div>
 
-                  <span className="w-fit rounded-full bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-800">
-                    Unit terdaftar
-                  </span>
+                      <span className="w-fit rounded-full bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-800">
+                        {item.unit ? "Unit terdaftar" : "Unit tidak ditemukan"}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <p className="text-sm text-black/50">
@@ -272,7 +313,7 @@ export function PeminjamBorrowingsDetail() {
                 <div className="border-t border-[#E7E4DC] pt-5">
                   <p className="mb-1 text-xs text-black/50">Jumlah Unit</p>
                   <p className="text-sm font-semibold text-[#24231F]">
-                    {currentUnit ? "1 unit" : "0 unit"}
+                    {currentItems.filter((item) => item.unit).length} unit
                   </p>
                 </div>
               </div>
@@ -351,6 +392,7 @@ export function PeminjamBorrowingsDetail() {
           </aside>
         </div>
       </div>
+      <FooterPeminjam />
     </main>
   );
 }

@@ -1,16 +1,81 @@
-import { Sidebar } from "../../components/sidebar/Sidebar";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Eye } from "lucide-react";
+import { Sidebar } from "../../components/sidebar/Sidebar";
 import { DataTable } from "../../components/ui/DataTable";
 import { Input } from "../../components/ui/Input";
 import { Select } from "../../components/ui/Select";
+import equipment from "../../data/equipment";
+import equipmentUnits from "../../data/equipmentUnits";
 
 export function PetugasEquipment() {
+  const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Category");
+  const categories = [...new Set(equipment.map((item) => item.category))];
   const summaryItems = [
-    { title: "Total Equipment", value: 10 },
-    { title: "Available", value: 9 },
-    { title: "Borrowed", value: 1 },
+    {
+      title: "Total Equipment",
+      value: equipment.filter((item) => item.name).length,
+    },
+    {
+      title: "Available Units",
+      value: equipmentUnits.filter((item) => item.status === "Available")
+        .length,
+    },
+    {
+      title: "Borrowed",
+      value: equipmentUnits.filter((item) => item.status === "Borrowed").length,
+    },
   ];
+  const equipmentColumns = [
+    { header: "No", render: (_, index) => index + 1 },
+    {
+      header: "Name",
+      accessor: "name",
+      cellClassName: "py-3.5 px-4 text-sm font-medium",
+    },
+    { header: "Category", accessor: "category" },
+    { header: "Stock", accessor: "stock" },
+    {
+      header: "Actions",
+      headerClassName: "text-center",
+      cellClassName: "py-3.5 px-4 text-sm text-center",
+      render: (row) => (
+        <div className="flex items-center justify-center gap-1">
+          <button
+            onClick={() => handleDetail(row.id)}
+            aria-label="View equipment"
+            className="p-1.5 rounded-md text-text/70 hover:text-text hover:bg-background transition-colors cursor-pointer"
+          >
+            <Eye size={18} />
+          </button>
+        </div>
+      ),
+    },
+  ];
+  const equipmentData = equipment.map((item, index) => ({
+    id: item.id,
+    number: index + 1,
+    name: item.name,
+    category: item.category,
+    stock: equipmentUnits.filter((unit) => unit.equipmentId === item.id).length,
+  }));
+
+  const handleDetail = (id) => {
+    navigate(`/petugas/equipment/${id}`);
+  };
+
+  const filteredEquipment = equipmentData.filter((unit) => {
+    const matchedSearch = unit.name
+      .toLowerCase()
+      .includes(searchInput.toLowerCase());
+
+    const matchedCategory =
+      selectedCategory === "Category" || unit.category === selectedCategory;
+
+    return matchedSearch && matchedCategory;
+  });
 
   return (
     <Sidebar role="petugas">
@@ -60,16 +125,21 @@ export function PetugasEquipment() {
               <Input
                 type="search"
                 placeholder="Search equipment..."
+                onChange={(e) => setSearchInput(e.target.value)}
+                value={searchInput}
               />
             </label>
 
             <Select
               defaultValue="Category"
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              value={selectedCategory}
               options={[
-                { value: "Category", label: "Category", disabled: true },
-                { value: "Camera", label: "Camera" },
-                { value: "Lighting", label: "Lighting" },
-                { value: "Support", label: "Support" },
+                { value: "Category", label: "Semua Category" },
+                ...categories.map((category) => ({
+                  value: category,
+                  label: category,
+                })),
               ]}
             />
           </div>
@@ -81,40 +151,8 @@ export function PetugasEquipment() {
           </header>
 
           <div className="overflow-hidden rounded-md border border-border/50">
-            <DataTable
-              columns={[
-                { header: "No", accessor: "number" },
-                {
-                  header: "Name",
-                  accessor: "name",
-                  cellClassName: "py-3.5 px-4 text-sm font-medium",
-                },
-                { header: "Category", accessor: "category" },
-                { header: "Stock", accessor: "stock" },
-                {
-                  header: "Actions",
-                  headerClassName: "text-center",
-                  cellClassName: "py-3.5 px-4 text-sm text-center",
-                  render: () => (
-                    <div className="flex items-center justify-center gap-1">
-                      <Link
-                        to="/petugas/equipment/detail"
-                        aria-label="View equipment"
-                        className="p-1.5 rounded-md text-text/70 hover:text-text hover:bg-background transition-colors cursor-pointer"
-                      >
-                        <Eye size={18} />
-                      </Link>
-                    </div>
-                  ),
-                },
-              ]}
-              data={[
-                { number: 1, name: "Sony A7 IV", category: "Camera", stock: 10 },
-              ]}
-            />
+            <DataTable columns={equipmentColumns} data={filteredEquipment} />
           </div>
-
-
         </section>
       </main>
     </Sidebar>

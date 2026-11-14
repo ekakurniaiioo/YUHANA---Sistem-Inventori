@@ -1,53 +1,75 @@
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { Sidebar } from "../../components/sidebar/Sidebar";
-import { Link } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { DataTable } from "../../components/ui/DataTable";
 import { Input } from "../../components/ui/Input";
 import { Select } from "../../components/ui/Select";
+import { StatusBadge } from "../../components/ui/StatusBadge";
+import { ConditionBadge } from "../../components/ui/ConditionBadge";
+import equipment from "../../data/equipment";
+import equipmentUnits from "../../data/equipmentUnits";
 
 export function PetugasEquipmentDetail() {
-  const equipmentUnits = [
+  const { id } = useParams();
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedCondition, setSelectedCondition] = useState("Semua Kondisi");
+  const [selectedStatus, setSelectedStatus] = useState("Semua Status");
+  const condition = [...new Set(equipmentUnits.map((unit) => unit.condition))];
+  const status = [...new Set(equipmentUnits.map((unit) => unit.status))];
+
+  const equipmentUnitsColumns = [
+    { header: "Unit ID", accessor: "id" },
     {
-      unitId: "CAM-001",
-      name: "Sony A7 IV",
-      category: "Camera",
-      condition: "Good",
-      status: "Available",
-      borrower: "-",
+      header: "Condition",
+      cellClassName: "py-3.5 px-4 text-sm",
+      render: (unit) => <ConditionBadge condition={unit.condition} />,
     },
     {
-      unitId: "CAM-002",
-      name: "Sony A7 IV",
-      category: "Camera",
-      condition: "Good",
-      status: "Available",
-      borrower: "-",
-    },
-    {
-      unitId: "CAM-003",
-      name: "Sony A7 IV",
-      category: "Camera",
-      condition: "Good",
-      status: "Available",
-      borrower: "-",
-    },
-    {
-      unitId: "CAM-004",
-      name: "Sony A7 IV",
-      category: "Camera",
-      condition: "Good",
-      status: "Available",
-      borrower: "-",
-    },
-    {
-      unitId: "CAM-005",
-      name: "Sony A7 IV",
-      category: "Camera",
-      condition: "Good",
-      status: "Borrowed",
-      borrower: "Yuha",
+      header: "Status",
+      cellClassName: "py-3.5 px-4 text-sm",
+      render: (unit) => <StatusBadge status={unit.status} />,
     },
   ];
+
+  const selectedEquipment = equipment.find((item) => item.id === id);
+  const selectedUnits = equipmentUnits.filter(
+    (unit) => unit.equipmentId === id,
+  );
+
+  const filteredUnits = selectedUnits.filter((unit) => {
+    const matchesSearch = unit.id
+      .toLowerCase()
+      .includes(searchInput.toLowerCase());
+    const matchesCondition =
+      selectedCondition === "Semua Kondisi" ||
+      unit.condition === selectedCondition;
+    const matchesStatus =
+      selectedStatus === "Semua Status" || unit.status === selectedStatus;
+
+    return matchesSearch && matchesCondition && matchesStatus;
+  });
+
+  if (!selectedEquipment) {
+    return (
+      <Sidebar role="petugas">
+        <main className="min-h-screen bg-background p-6">
+          <header className="mb-6 flex flex-col">
+            <h1 className="font-poppins text-2xl font-bold tracking-tight">
+              Equipment not found
+            </h1>
+            <Button
+              to="/petugas/equipment"
+              variant="dark"
+              className="mt-4 w-fit"
+            >
+              &larr; Back to Equipment
+            </Button>
+          </header>
+        </main>
+      </Sidebar>
+    );
+  }
 
   return (
     <Sidebar role="petugas">
@@ -66,8 +88,10 @@ export function PetugasEquipmentDetail() {
         </header>
 
         <section className="bg-surface border border-border text-text p-6 font-poppins rounded-lg mb-6">
-          <h2 className="text-xl font-bold">Sony A7 IV</h2>
-          <p className="text-text/60">Camera • {equipmentUnits.length} Units</p>
+          <h2 className="text-xl font-bold">{selectedEquipment.name}</h2>
+          <p className="text-text/60">
+            {selectedEquipment.category} • {selectedUnits.length} Units
+          </p>
         </section>
 
         <section className="flex gap-4 mb-6">
@@ -92,24 +116,26 @@ export function PetugasEquipmentDetail() {
               <Input
                 type="search"
                 placeholder="Search unit..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
               />
             </label>
 
             <Select
-              defaultValue="Condition"
+              value={selectedCondition}
+              onChange={(e) => setSelectedCondition(e.target.value)}
               options={[
-                { value: "Condition", label: "Condition", disabled: true },
-                { value: "Good", label: "Good" },
-                { value: "Damaged", label: "Damaged" },
+                { value: "Semua Kondisi", label: "Semua Kondisi" },
+                ...condition.map((item) => ({ value: item, label: item })),
               ]}
             />
 
             <Select
-              defaultValue="Status"
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
               options={[
-                { value: "Status", label: "Status", disabled: true },
-                { value: "Available", label: "Available" },
-                { value: "Borrowed", label: "Borrowed" },
+                { value: "Semua Status", label: "Semua Status" },
+                ...status.map((item) => ({ value: item, label: item })),
               ]}
             />
           </div>
@@ -122,34 +148,11 @@ export function PetugasEquipmentDetail() {
 
           <div className="overflow-hidden rounded-md border border-border/50">
             <DataTable
-              columns={[
-                { header: "Unit ID", accessor: "unitId" },
-                {
-                  header: "Condition",
-                  cellClassName: "py-3.5 px-4 text-sm",
-                  render: (unit) => (
-                    <span className="inline-block bg-success/15 text-success border border-success/20 px-2.5 py-0.5 rounded-lg text-xs font-medium">
-                      {unit.condition}
-                    </span>
-                  ),
-                },
-                {
-                  header: "Status",
-                  cellClassName: "py-3.5 px-4 text-sm",
-                  render: (unit) => (
-                    <span className="inline-block bg-success/15 text-success border border-success/20 px-2.5 py-0.5 rounded-lg text-xs font-medium">
-                      {unit.status}
-                    </span>
-                  ),
-                },
-                { header: "Borrowing User", accessor: "borrower" },
-              ]}
-              data={equipmentUnits}
-              getRowKey={(unit) => unit.unitId}
+              columns={equipmentUnitsColumns}
+              data={filteredUnits}
+              getRowKey={(row) => row.id}
             />
           </div>
-
-
         </section>
       </main>
     </Sidebar>

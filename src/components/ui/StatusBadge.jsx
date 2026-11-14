@@ -5,6 +5,7 @@ const statusClasses = {
   Pending: "bg-warning/15 text-warning border-warning/20",
   Approved: "bg-success/15 text-success border-success/20",
   Overdue: "bg-danger/15 text-danger border-danger/20",
+  Rejected: "bg-danger/15 text-danger border-danger/20",
 };
 
 export function StatusBadge({ status }) {

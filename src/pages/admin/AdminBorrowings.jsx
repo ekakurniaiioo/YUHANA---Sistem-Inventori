@@ -1,21 +1,24 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../../components/sidebar/Sidebar";
 import { Eye } from "lucide-react";
 import { DataTable } from "../../components/ui/DataTable";
-import { StatusBadge } from "../../components/ui/StatusBadge";
 import { Input } from "../../components/ui/Input";
 import { Select } from "../../components/ui/Select";
-import users from "../../data/users";
-import equipment from "../../data/equipment";
-import borrowings from "../../data/borrowings";
-import equipmentUnits from "../../data/equipmentUnits";
+import { getBorrowerGroups } from "../../utils/borrowerBorrowings";
 
 export function AdminBorrowings() {
-  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("Status");
-  const [selectedBorrowingId, setSelectedBorrowingId] = useState(null);
-  const status = [...new Set(borrowings.map((borrowing) => borrowing.status))];
+  const borrowerGroups = getBorrowerGroups();
+  const status = [
+    ...new Set(
+      borrowerGroups.flatMap((group) =>
+        group.borrowings.map((borrowing) => borrowing.status),
+      ),
+    ),
+  ];
 
   const borrowingColumns = [
     { header: "No", render: (_, index) => index + 1 },
@@ -24,16 +27,7 @@ export function AdminBorrowings() {
       accessor: "borrower",
       cellClassName: "py-3.5 px-4 text-sm font-medium",
     },
-    {
-      header: "Equipment",
-      accessor: "equipment",
-      cellClassName: "py-3.5 px-4 text-sm font-medium",
-    },
-    { header: "Tanggal Pinjam", accessor: "date" },
-    {
-      header: "Status",
-      render: (row) => <StatusBadge status={row.status} />,
-    },
+    { header: "Active Equipment", accessor: "activeEquipmentCount" },
     {
       header: "Actions",
       headerClassName: "text-center",
@@ -41,51 +35,27 @@ export function AdminBorrowings() {
       render: (row) => (
         <div className="flex items-center justify-center gap-1">
           <button
-            onClick={() => {
-              setSelectedBorrowingId(row.id);
-              setIsOpen(true);
-            }}
-            aria-label="View borrowing details"
+            onClick={() => navigate(`/admin/borrowings/${row.userId}`)}
+            aria-label={`View ${row.borrower} details`}
             className="p-1.5 rounded-md text-text/70 hover:text-text hover:bg-background transition-colors cursor-pointer"
           >
             <Eye size={18} />
+            <span>View</span>
           </button>
         </div>
       ),
     },
   ];
 
-  const borrowingData = borrowings.map((item, index) => {
-    const user = users.find((user) => user.id === item.userId);
+  const filteredBorrowers = borrowerGroups.filter((group) => {
+    const matchesSearch = group.borrower
+      .toLowerCase()
+      .includes(searchInput.toLowerCase());
+    const matchesStatus =
+      selectedStatus === "Status" ||
+      group.borrowings.some((borrowing) => borrowing.status === selectedStatus);
 
-    const unit = equipmentUnits.find((unit) => unit.id === item.unitId);
-
-    const name = equipment.find((name) => name.id === unit.equipmentId);
-
-    return {
-      id: item.id,
-      number: index + 1,
-      borrower: user ? user.name : "Unknown",
-      equipment: name ? name.name : "Unknown",
-      unitId: item.unitId,
-      date: item.borrowDate,
-      status: item.status,
-    };
-  });
-
-  const selectedBorrowing = borrowingData.find(
-    (item) => item.id === selectedBorrowingId,
-  );
-
-  const filteredBorrowings = borrowingData.filter((unit) => {
-    const matchesSearch =
-      unit.borrower.toLowerCase().includes(searchInput.toLowerCase()) ||
-      unit.equipment.toLowerCase().includes(searchInput.toLowerCase());
-
-    const macthesCategory =
-      selectedStatus === "Status" || unit.status === selectedStatus;
-
-    return matchesSearch && macthesCategory;
+    return matchesSearch && matchesStatus;
   });
 
   return (
@@ -147,57 +117,13 @@ export function AdminBorrowings() {
           </header>
 
           <div className="overflow-hidden rounded-md border border-border/50">
-            <DataTable columns={borrowingColumns} data={filteredBorrowings} />
+            <DataTable
+              columns={borrowingColumns}
+              data={filteredBorrowers}
+              getRowKey={(row) => row.userId}
+            />
           </div>
         </section>
-
-        {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div className="bg-surface border border-border rounded-lg p-6 w-full max-w-md shadow-xl">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-poppins font-semibold">
-                  Borrowing Details
-                </h2>
-
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-text/60 hover:text-text cursor-pointer"
-                >
-                  ✕
-                </button>
-              </div>
-
-              {selectedBorrowing && (
-                <div className="space-y-4 text-sm font-inter">
-                  <p>
-                    <span className="text-text/60">Borrower: </span>
-                    {selectedBorrowing.borrower}
-                  </p>
-
-                  <p>
-                    <span className="text-text/60">Equipment: </span>
-                    {selectedBorrowing.equipment}
-                  </p>
-
-                  <p>
-                    <span className="text-text/60">Unit Id: </span>
-                    {selectedBorrowing.unitId}
-                  </p>
-
-                  <p>
-                    <span className="text-text/60">Borrow Date: </span>
-                    {selectedBorrowing.date}
-                  </p>
-
-                  <p>
-                    <span className="text-text/60">Status: </span>
-                    {selectedBorrowing.status}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
       </main>
     </Sidebar>
   );

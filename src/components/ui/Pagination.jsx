@@ -4,6 +4,7 @@ export function Pagination({
   totalItems,
   pageSize,
   onPageChange,
+  className = "",
 }) {
   const start = totalItems ? (currentPage - 1) * pageSize + 1 : 0;
   const end = Math.min(currentPage * pageSize, totalItems);
